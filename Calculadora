@@ -1,0 +1,87 @@
+package calculo;
+
+public class Calculadora {
+	
+	private double compViga; //comprimento total da viga
+	private double cargConc; //módulo da força concentrada
+	private double cargDist; //módulo da carga distribuída
+	private double compDist; //comprimento sobre o qual a carga triangular está distribuída
+	private double[] reacao; //reação no apoio A: {Ax, Ay, momento}
+	private SecTransversal area;
+	
+	public Calculadora(double compViga, double cargConc, double cargDist, double compDist) {
+		setCompViga(compViga);
+		setCargConc(cargConc);
+		setCargDist(cargDist);
+		setCompDist(compDist);
+		calcReacao();
+	}
+	
+	//calcula reação no apoio A utilizando os dados recebidos
+	private void calcReacao() {
+		reacao[0] = 0.0; //não há carregamento horizontal, Ax = 0 sempre
+		reacao[1] = cargConc - (cargDist * compDist) / 2.0; //o sentido "para cima" é adotado como positivo para Ay
+		reacao[2] = ((cargDist * compDist) / 2.0) * (compDist * 3) - cargConc * compViga; //sentido horário adotado como positivo para o momento no apoio A
+	}
+	
+	//recebe como parâmetro a posição do corte (em metros) com relação ao ponto A
+	//retorna o valor da força interna de cisalhamento nesse lugar
+	public double calcV(double posicao) {
+		double resultado = 0.0;
+		if(posicao < compDist) {
+			resultado = (cargDist * Math.pow(posicao, 2)) / (2.0 * compDist); //termo com x^2 (sendo x a posição)
+			resultado += -1 * cargDist * posicao; //termo com x
+			resultado += reacao[1]; //termo independente
+		}
+		else {
+			resultado = cargConc;
+		}
+		return resultado;
+	}
+	
+	//recebe a posição do corte, retorna o valor do momento fletor
+	public double calcM(double posicao) {
+		double resultado = 0.0;
+		if(posicao < compDist) {
+			resultado = (-1 * cargDist * Math.pow(posicao, 3)) / (compDist * 6.0); //termo com o x^3
+			resultado += (2.0 * cargDist * Math.pow(posicao, 2)) / 3.0; //termo com o x^2
+			resultado += reacao[1] * posicao; // termo com o x
+			resultado += reacao[2];
+		}
+		else {
+			resultado = (((cargDist * compDist) / 2.0) + reacao[1]) * posicao;
+			resultado -= ((cargDist * Math.pow(compDist, 2)) / 6.0) - reacao[2];
+		}
+		return resultado;
+	}
+	
+	//para um corte em posição, retorna a tensão normal medida na "altura" (medida com relação à base da área transversal)
+	public double calcSigma(double altura, double posicao) {
+		return (-1 * this.calcM(posicao) * Math.abs(area.getYBarra() - altura)) / area.getI();
+	}
+	
+	//para um corte na posição dada, calcula a tensão de cisalhamento na "altura"
+	public double calcTau(double altura, double posicao) {
+		double resultado = 0.0;
+		resultado = (this.calcV(posicao) * area.calcQ(altura)) / (area.getI() * area.largura(altura));
+		return resultado;
+	}
+	
+	//métodos set e get
+	public void setCompViga(double valor) {
+		compViga = valor;
+	}
+	
+	public void setCargConc(double valor) {
+		cargConc = valor;
+	}
+	
+	public void setCargDist(double valor) {
+		cargDist = valor;
+	}
+	
+	public void setCompDist(double valor) {
+		compDist = valor;
+	}
+	
+}
