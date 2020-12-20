@@ -1,0 +1,252 @@
+package interfaceGrafica;
+
+import java.awt.Image;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
+import calculo.Calculadora;
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Dimension;
+
+public class JanelaResultados extends JFrame {
+	
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JanelaDados janDad;
+	private Calculadora calcula;
+	private JPanel panel;
+	JLabel fundo;
+	Image fundoPronto02;
+	
+	public JanelaResultados(JanelaDados janDad) {
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		setBounds(100, 100, 1174, 3167);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		this.setResizable(false);
+		
+		//JPanel que será colocar no scrollPanel
+		panel = new JPanel();
+		panel.setBounds(10, -269, 1500, 4000);
+		contentPane.add(panel);
+		panel.setLayout(null);
+		//panel.setPreferredSize(new Dimension(1050, 4000));
+		
+		this.janDad = janDad;
+		
+		JLabel tituloResultados = new JLabel("RESULTADOS");
+		tituloResultados.setForeground(Color.WHITE);
+		tituloResultados.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 66));
+		tituloResultados.setBounds(22, 11, 423, 82);
+		panel.add(tituloResultados);
+		
+		//Textos do digrama
+		//possuem os dados anteriormente fornecidos pelo usuário
+		
+		JLabel tituloDiagramas = new JLabel("Representa\u00E7\u00E3o do problema com os dados fornecidos:");
+		tituloDiagramas.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		tituloDiagramas.setForeground(Color.WHITE);
+		tituloDiagramas.setBackground(Color.WHITE);
+		tituloDiagramas.setBounds(22, 143, 449, 46);
+		panel.add(tituloDiagramas);
+		
+		JLabel compVigaTXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		compVigaTXT.setForeground(Color.WHITE);
+		compVigaTXT.setFont(new Font("Arial", Font.PLAIN, 16));
+		compVigaTXT.setBounds(227, 480, 154, 14);
+		panel.add(compVigaTXT);
+		
+		JLabel compDistTXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		compDistTXT.setForeground(Color.WHITE);
+		compDistTXT.setFont(new Font("Arial", Font.PLAIN, 16));
+		compDistTXT.setBounds(150, 440, 154, 14);
+		panel.add(compDistTXT);
+		
+		JLabel cargConcTXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		cargConcTXT.setForeground(Color.WHITE);
+		cargConcTXT.setFont(new Font("Arial", Font.PLAIN, 16));
+		cargConcTXT.setBounds(515, 270, 154, 14);
+		panel.add(cargConcTXT);
+		
+		JLabel cargDistTXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		cargDistTXT.setForeground(Color.WHITE);
+		cargDistTXT.setFont(new Font("Arial", Font.BOLD, 16));
+		cargDistTXT.setBounds(58, 231, 154, 14);
+		panel.add(cargDistTXT);
+		
+		JLabel b1TXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		b1TXT.setForeground(Color.WHITE);
+		b1TXT.setFont(new Font("Arial", Font.BOLD, 16));
+		b1TXT.setBounds(701, 189, 154, 14);
+		panel.add(b1TXT);
+		
+		JLabel c1TXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		c1TXT.setForeground(Color.WHITE);
+		c1TXT.setFont(new Font("Arial", Font.BOLD, 16));
+		c1TXT.setBounds(969, 244, 154, 14);
+		panel.add(c1TXT);
+		
+		JLabel a1TXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		a1TXT.setForeground(Color.WHITE);
+		a1TXT.setFont(new Font("Arial", Font.PLAIN, 16));
+		a1TXT.setBounds(969, 340, 154, 14);
+		panel.add(a1TXT);
+		
+		JLabel a2TXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		a2TXT.setForeground(Color.WHITE);
+		a2TXT.setFont(new Font("Arial", Font.PLAIN, 16));
+		a2TXT.setBounds(796, 340, 154, 14);
+		panel.add(a2TXT);
+		
+		JLabel b2TXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		b2TXT.setForeground(Color.WHITE);
+		b2TXT.setFont(new Font("Arial", Font.PLAIN, 16));
+		b2TXT.setBounds(746, 506, 154, 14);
+		panel.add(b2TXT);
+		
+		JLabel c2TXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		c2TXT.setForeground(Color.WHITE);
+		c2TXT.setFont(new Font("Arial", Font.PLAIN, 16));
+		c2TXT.setBounds(969, 440, 154, 14);
+		panel.add(c2TXT);
+		
+		JLabel observacao = new JLabel("*Observa\u00E7\u00E3o:  os comprimentos das figuras n\u00E3o est\u00E3o em propor\u00E7\u00E3o.");
+		observacao.setForeground(Color.LIGHT_GRAY);
+		observacao.setFont(new Font("Arial", Font.PLAIN, 11));
+		observacao.setBackground(Color.WHITE);
+		observacao.setBounds(58, 540, 439, 46);
+		panel.add(observacao);
+		
+		//Reação e diagramas
+		JLabel tituloReacao = new JLabel("Rea\u00E7\u00E3o no apoio de engaste (no ponto A):");
+		tituloReacao.setForeground(Color.WHITE);
+		tituloReacao.setFont(new Font("Arial", Font.PLAIN, 24));
+		tituloReacao.setBackground(Color.WHITE);
+		tituloReacao.setBounds(21, 682, 879, 46);
+		panel.add(tituloReacao);
+				
+		JLabel axTXT = new JLabel("Ax = 0");
+		axTXT.setForeground(Color.LIGHT_GRAY);
+		axTXT.setFont(new Font("Arial", Font.PLAIN, 18));
+		axTXT.setBounds(40, 739, 70, 31);
+		panel.add(axTXT);
+		
+		JLabel ayTXT = new JLabel("Ay = ");
+		ayTXT.setForeground(Color.LIGHT_GRAY);
+		ayTXT.setFont(new Font("Arial", Font.PLAIN, 18));
+		ayTXT.setBounds(40, 781, 154, 31);
+		panel.add(ayTXT);
+		
+		JLabel maTXT = new JLabel("Momento no engaste:  M = ");
+		maTXT.setForeground(Color.LIGHT_GRAY);
+		maTXT.setFont(new Font("Arial", Font.PLAIN, 18));
+		maTXT.setBounds(40, 823, 405, 31);
+		panel.add(maTXT);
+		
+		JLabel observacao02 = new JLabel("<html>\"Para cima\" foi adotado como sentido positivo para Ay.<br>  Para o momento em A, o sentido hor\u00E1rio \u00E9 o positivo.</html>");
+		observacao02.setForeground(Color.LIGHT_GRAY);
+		observacao02.setFont(new Font("Arial", Font.PLAIN, 11));
+		observacao02.setBackground(Color.WHITE);
+		observacao02.setBounds(501, 823, 336, 31);
+		panel.add(observacao02);
+
+		JLabel tituloVEM = new JLabel("Diagramas de esfor\u00E7o cortante e momento fletor:");
+		tituloVEM.setForeground(Color.WHITE);
+		tituloVEM.setFont(new Font("Arial", Font.PLAIN, 24));
+		tituloVEM.setBackground(Color.WHITE);
+		tituloVEM.setBounds(22, 931, 879, 46);
+		panel.add(tituloVEM);
+		
+		//fundo e logo
+		JLabel logo = new JLabel("");
+		logo.setBounds(835, 0, 324, 156);
+		panel.add(logo);
+		Image logoRemo = new ImageIcon(this.getClass().getResource("/logoRemoMini.png")).getImage();
+		logo.setIcon(new ImageIcon(logoRemo));
+		
+
+		
+		fundo = new JLabel("");
+		fundo.setBounds(0, -48, 1167, 3759);
+		panel.add(fundo);
+		fundoPronto02 = new ImageIcon(this.getClass().getResource("/fundoPronto02.png")).getImage();
+		fundo.setIcon(new ImageIcon(fundoPronto02));
+		
+
+		
+
+		
+
+	}
+	
+	public void setVisible(boolean simOuNao) {
+		if(simOuNao) {
+			
+			//criação de um objeto calculadora com os dados fornecidos pelo usuário (dados atualizados)
+			calcula = new Calculadora(janDad.getCompViga(), janDad.getCargConc(), janDad.getCargDist(), janDad.getCompDist());
+			
+			//criação do gráfico de esforço cortante
+			JFreeChart forCisaChart = ChartFactory.createXYLineChart(null, "Esforço cortante (em kN)", "Posição do corte (em m)", forCisaDataset(), PlotOrientation.VERTICAL, true, true, false);
+			
+			//parte que coloca o gráfico de esforço cortante no painel após definir a posição e o tamanho
+			ChartPanel ForCisaChartPanel = new ChartPanel(forCisaChart);
+			panel.add(ForCisaChartPanel);
+			ForCisaChartPanel.setBounds(40, 1015, 528, 316);
+			
+			//criação do gráfico de momento fletor
+			JFreeChart momFletChart = ChartFactory.createXYLineChart(null, "Momento fletor (em kN.m)", "Posição do corte (em m)", momFletDataset(), PlotOrientation.VERTICAL, true, true, false);
+			
+			//parte que coloca o gráfico de momento fletor no painel após definir a posição e o tamanho
+			ChartPanel momFletChartPanel = new ChartPanel(momFletChart);
+			panel.add(momFletChartPanel);
+			ForCisaChartPanel.setBounds(592, 1015, 528, 316);
+			
+			//redesenha o fundo (para ele ir para trás)
+			fundo.repaint();
+			
+			//torna a janela de resultados visível
+			super.setVisible(true);
+		}
+		else {
+			super.setVisible(false);
+			
+		}
+	}
+	
+	private XYDataset forCisaDataset() {
+		final XYSeries forCisaSeries = new XYSeries("Esforço cortante");
+		for(double i = 0.0; i < janDad.getCompViga(); i += 0.0001)
+			forCisaSeries.add(i, calcula.calcV(i));
+		
+		final XYSeriesCollection dataset = new XYSeriesCollection();
+		dataset.addSeries(forCisaSeries);
+		
+		return dataset;
+	}
+	
+	private XYDataset momFletDataset() {
+		final XYSeries momFletDataset = new XYSeries("Momento fletor");
+				for(double i = 0.0; i < 12; i += 0.0001)
+					momFletDataset.add(i, calcula.calcM(i));
+		
+		final XYSeriesCollection dataset = new XYSeriesCollection();
+		dataset.addSeries(momFletDataset);
+		
+		return dataset;
+	}
+}
