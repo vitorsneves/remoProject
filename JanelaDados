@@ -1,0 +1,551 @@
+package interfaceGrafica;
+
+import java.awt.EventQueue;
+import java.awt.Image;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class JanelaDados extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JLabel compVigaTXT;
+	private JLabel compDistTXT;
+	private JLabel cargConcTXT;
+	private JLabel cargDistTXT;
+	private JLabel b1TXT;
+	private JLabel c1TXT;
+	private JLabel a1TXT;
+	private JLabel a2TXT;
+	private JLabel b2TXT;
+	private JLabel c2TXT;
+	private JTextField compVigaTF;
+	private JTextField compDistTF;
+	private JTextField cargConcTF;
+	private JTextField cargDistTF;
+	private JTextField b1TF;
+	private JTextField c1TF;
+	private JTextField a1TF;
+	private JTextField a2TF;
+	private JTextField b2TF;
+	private JTextField c2TF;
+	private JButton calcularBtn;
+	private JButton dadosAdicBtn;
+	private JanelaDadosAdic janDadAdic;
+	
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					JanelaDados frame = new JanelaDados();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	public JanelaDados() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 1279, 720);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		janDadAdic = new JanelaDadosAdic(getThis());
+		JanelaResultados janResul = new JanelaResultados(getThis());
+		
+		//Campos de texto e labels das variáveis gerais da viga (comprimento, módulo de forças):
+		
+		compVigaTXT = new JLabel("Tamanho da viga (em metros)");
+		compVigaTXT.setToolTipText("Tamanho total da viga (distancia entre A e C). Forne\u00E7a o valor em metros.");
+		compVigaTXT.setFont(new Font("Arial", Font.BOLD, 14));
+		compVigaTXT.setForeground(Color.WHITE);
+		compVigaTXT.setBounds(44, 380, 220, 14);
+		contentPane.add(compVigaTXT);
+		
+		compVigaTF = new JTextField();
+		compVigaTF.setForeground(Color.WHITE);
+		compVigaTF.setFont(new Font("Arial", Font.BOLD, 16));
+		compVigaTF.setBackground(Color.BLACK);
+		compVigaTF.setBounds(44, 405, 199, 24);
+		compVigaTF.setDocument(new Limitador(8));
+		compVigaTF.setColumns(10);
+		contentPane.add(compVigaTF);
+		
+		compDistTXT = new JLabel("Dist\u00E2ncia entre A e B (em metros)");
+		compDistTXT.setToolTipText("Comprimento sobre o qual a carga distribu\u00EDda est\u00E1 distribu\u00EDda. Forne\u00E7a o valor em metros.");
+		compDistTXT.setForeground(Color.WHITE);
+		compDistTXT.setFont(new Font("Arial", Font.BOLD, 14));
+		compDistTXT.setBounds(321, 380, 245, 14);
+		contentPane.add(compDistTXT);
+		
+		compDistTF = new JTextField();
+		compDistTF.setBackground(Color.BLACK);
+		compDistTF.setBounds(321, 405, 199, 24);
+		compDistTF.setDocument(new Limitador(8));
+		compDistTF.setForeground(Color.WHITE);
+		compDistTF.setFont(new Font("Arial", Font.BOLD, 16));
+		contentPane.add(compDistTF);
+		compDistTF.setColumns(10);
+		
+		cargConcTXT = new JLabel("M\u00F3dulo da for\u00E7a concentrada");
+		cargConcTXT.setToolTipText("Magnitude da for\u00E7a pontual aplicada em C (medida em KN).");
+		cargConcTXT.setForeground(Color.WHITE);
+		cargConcTXT.setFont(new Font("Arial", Font.BOLD, 14));
+		cargConcTXT.setBounds(44, 473, 220, 14);
+		contentPane.add(cargConcTXT);
+		
+		cargConcTF = new JTextField();
+		cargConcTF.setBackground(Color.BLACK);
+		cargConcTF.setBounds(44, 498, 199, 24);
+		cargConcTF.setDocument(new Limitador(8));
+		cargConcTF.setForeground(Color.WHITE);
+		cargConcTF.setFont(new Font("Arial", Font.BOLD, 16));
+		contentPane.add(cargConcTF);
+		cargConcTF.setColumns(10);
+		
+		cargDistTXT = new JLabel("M\u00F3dulo for\u00E7a distribu\u00EDda");
+		cargDistTXT.setToolTipText("Magnitude da for\u00E7a distribuida triangularmente (medida em KN).");
+		cargDistTXT.setForeground(Color.WHITE);
+		cargDistTXT.setFont(new Font("Arial", Font.BOLD, 14));
+		cargDistTXT.setBounds(321, 473, 220, 14);
+		contentPane.add(cargDistTXT);
+		
+		cargDistTF = new JTextField();
+		cargDistTF.setBackground(Color.BLACK);
+		cargDistTF.setBounds(321, 498, 199, 24);
+		contentPane.add(cargDistTF);
+		cargDistTF.setForeground(Color.WHITE);
+		cargDistTF.setFont(new Font("Arial", Font.BOLD, 16));
+		cargDistTF.setColumns(10);
+		cargDistTF.setDocument(new Limitador(8));
+		
+		//Campos de texto e labels das variáveis da área transversal:
+		
+		b1TXT = new JLabel("Comp. da mesa superior (mm)");
+		b1TXT.setForeground(Color.WHITE);
+		b1TXT.setFont(new Font("Arial", Font.BOLD, 14));
+		b1TXT.setBounds(717, 382, 220, 14);
+		contentPane.add(b1TXT);
+		
+		b1TF = new JTextField();
+		b1TF.setColumns(10);
+		b1TF.setBackground(Color.BLACK);
+		b1TF.setBounds(717, 407, 167, 24);
+		b1TF.setForeground(Color.WHITE);
+		b1TF.setFont(new Font("Arial", Font.BOLD, 16));
+		contentPane.add(b1TF);
+		b1TF.setDocument(new Limitador(8));
+		
+		c1TXT = new JLabel("Altura da mesa superior (mm)\r\n");
+		c1TXT.setForeground(Color.WHITE);
+		c1TXT.setFont(new Font("Arial", Font.BOLD, 14));
+		c1TXT.setBounds(968, 380, 220, 14);
+		contentPane.add(c1TXT);
+		
+		c1TF = new JTextField();
+		c1TF.setBackground(Color.BLACK);
+		c1TF.setBounds(968, 407, 167, 24);
+		c1TF.setForeground(Color.WHITE);
+		c1TF.setFont(new Font("Arial", Font.BOLD, 16));
+		contentPane.add(c1TF);
+		c1TF.setColumns(10);
+		c1TF.setDocument(new Limitador(8));
+		
+		a1TXT = new JLabel("Comprimento da alma (mm)");
+		a1TXT.setForeground(Color.WHITE);
+		a1TXT.setFont(new Font("Arial", Font.BOLD, 14));
+		a1TXT.setBounds(717, 458, 220, 14);
+		contentPane.add(a1TXT);
+		
+		a1TF = new JTextField();
+		a1TF.setColumns(10);
+		a1TF.setBackground(Color.BLACK);
+		a1TF.setBounds(717, 483, 167, 24);
+		a1TF.setForeground(Color.WHITE);
+		a1TF.setFont(new Font("Arial", Font.BOLD, 16));
+		contentPane.add(a1TF);
+		a1TF.setDocument(new Limitador(8));
+		
+		a2TXT = new JLabel("Largura da alma (mm)");
+		a2TXT.setForeground(Color.WHITE);
+		a2TXT.setFont(new Font("Arial", Font.BOLD, 14));
+		a2TXT.setBounds(968, 458, 220, 14);
+		contentPane.add(a2TXT);
+		
+		a2TF = new JTextField();
+		a2TF.setColumns(10);
+		a2TF.setBackground(Color.BLACK);
+		a2TF.setBounds(968, 483, 167, 24);
+		a2TF.setForeground(Color.WHITE);
+		a2TF.setFont(new Font("Arial", Font.BOLD, 16));
+		contentPane.add(a2TF);
+		a2TF.setDocument(new Limitador(8));
+		
+		b2TXT = new JLabel("Comp. da mesa inferior (mm)");
+		b2TXT.setForeground(Color.WHITE);
+		b2TXT.setFont(new Font("Arial", Font.BOLD, 14));
+		b2TXT.setBounds(717, 531, 220, 14);
+		contentPane.add(b2TXT);
+		
+		b2TF = new JTextField();
+		b2TF.setColumns(10);
+		b2TF.setBackground(Color.BLACK);
+		b2TF.setBounds(717, 556, 167, 24);
+		b2TF.setForeground(Color.WHITE);
+		b2TF.setFont(new Font("Arial", Font.BOLD, 16));
+		contentPane.add(b2TF);
+		b2TF.setDocument(new Limitador(8));
+		
+		c2TXT = new JLabel("Altura da mesa inferior (mm)");
+		c2TXT.setForeground(Color.WHITE);
+		c2TXT.setFont(new Font("Arial", Font.BOLD, 14));
+		c2TXT.setBounds(968, 531, 220, 14);
+		contentPane.add(c2TXT);
+		
+		c2TF = new JTextField();
+		c2TF.setColumns(10);
+		c2TF.setBackground(Color.BLACK);
+		c2TF.setBounds(968, 556, 167, 24);
+		c2TF.setForeground(Color.WHITE);
+		c2TF.setFont(new Font("Arial", Font.BOLD, 16));
+		contentPane.add(c2TF);
+		c2TF.setDocument(new Limitador(8));
+		
+		//Botões presentes na janela
+		
+		calcularBtn = new JButton("CALCULAR");
+		calcularBtn.setToolTipText("Quando terminar de preencher essa janela, use esse bot\u00E3o para obter os resultados");
+		calcularBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				calcularBtn.setEnabled(false);
+				allWhite();
+				if(verificarDados()) {
+					janResul.setVisible(true);
+				}
+				calcularBtn.setEnabled(true);
+			}
+		});
+		calcularBtn.setBackground(Color.DARK_GRAY);
+		calcularBtn.setForeground(Color.WHITE);
+		calcularBtn.setFont(new Font("Arial", Font.BOLD, 30));
+		calcularBtn.setBounds(385, 567, 257, 70);
+		calcularBtn.setFocusPainted(false);
+		contentPane.add(calcularBtn);
+		
+		dadosAdicBtn = new JButton("Fornecer dados adicionais");
+		dadosAdicBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dadosAdicBtn.setEnabled(false);
+				calcularBtn.setEnabled(false);
+				janDadAdic.setVisible(true);
+			}
+		});
+		dadosAdicBtn.setBackground(Color.LIGHT_GRAY);
+		dadosAdicBtn.setForeground(Color.BLACK);
+		dadosAdicBtn.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		dadosAdicBtn.setToolTipText("Dados opcionais n\u00E3o necess\u00E1rios para o normal funcionamento do programa");
+		dadosAdicBtn.setBounds(969, 614, 199, 37);
+		dadosAdicBtn.setFocusPainted(false);
+		contentPane.add(dadosAdicBtn);
+		
+		JButton limparBtn = new JButton("Limpar campos de texto");
+		limparBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cleanAll();
+			}
+		});
+		limparBtn.setBackground(Color.LIGHT_GRAY);
+		limparBtn.setForeground(Color.BLACK);
+		limparBtn.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		limparBtn.setToolTipText("Apaga todas as informa\u00E7\u00F5es fornecidas");
+		limparBtn.setBounds(717, 614, 199, 37);
+		limparBtn.setFocusPainted(false);
+		contentPane.add(limparBtn);
+		
+		//Imagem de fundo e logo
+		
+		JLabel logo = new JLabel("");
+		logo.setBounds(24, 533, 332, 169);
+		contentPane.add(logo);
+		Image logoRemo = new ImageIcon(this.getClass().getResource("/logoRemo.png")).getImage();
+		logo.setIcon(new ImageIcon(logoRemo));
+		
+		JLabel fundo = new JLabel("");
+		fundo.setFont(new Font("Arial", Font.PLAIN, 11));
+		fundo.setBounds(0, 0, 1263, 681);
+		contentPane.add(fundo);
+		Image fundoPronto01 = new ImageIcon(this.getClass().getResource("/fundoPronto01.png")).getImage();
+		fundo.setIcon(new ImageIcon(fundoPronto01));
+		
+		this.setResizable(false);
+		
+		JLabel toolTipSecTran = new JLabel("New label");
+		toolTipSecTran.setToolTipText("Diagrama da \u00E1rea de se\u00E7\u00E3o transversal da viga.");
+		toolTipSecTran.setBounds(760, 55, 365, 253);
+		contentPane.add(toolTipSecTran);
+		
+		JLabel toolTipViga = new JLabel("New label");
+		toolTipViga.setToolTipText("Diagrama da viga, vista lateral (incluindo cargas).");
+		toolTipViga.setBounds(63, 55, 484, 241);
+		contentPane.add(toolTipViga);
+		
+		JLabel toolTipLogo = new JLabel("New label");
+		toolTipLogo.setToolTipText("Para todas as coisas, remo.");
+		toolTipLogo.setBounds(116, 582, 167, 47);
+		contentPane.add(toolTipLogo);
+	}
+	
+	//verifica se os dados digitados apresentam problemas
+	public boolean verificarDados() {
+		
+		boolean campoVazio = false; //se o usuário deixar um campo de texto em branco, esse valor será alterado pra true
+		boolean stringEmCampo = false; //se for digitado uma string em um campo de texto, esse valor será alterado para true
+		boolean compNega = false; //se for digitado um valor nulo ou negativo para comprimento, esse valor será alterado para true
+		
+		//esses primeiros if servem para textar se foi digitado double nos campos de texto
+		if(compVigaTF.getText().isEmpty()) {
+			compVigaTXT.setForeground(Color.RED); //os campos sem double tem a cor de seu título mudada para vermelho
+			campoVazio = true;
+		}
+		if(compDistTF.getText().isEmpty()) {
+			compDistTXT.setForeground(Color.RED);
+			campoVazio = true;
+		}
+		if(cargConcTF.getText().isEmpty()) {
+			cargConcTXT.setForeground(Color.RED);
+			campoVazio = true;
+		}
+		if(cargDistTF.getText().isEmpty()) {
+			cargDistTXT.setForeground(Color.RED);
+			campoVazio = true;
+		}
+		if(b1TF.getText().isEmpty()) {
+			b1TXT.setForeground(Color.RED);
+			campoVazio = true;
+		}
+		if(c1TF.getText().isEmpty()) {
+			c1TXT.setForeground(Color.RED);
+			campoVazio = true;
+		}
+		if(a1TF.getText().isEmpty()) {
+			a1TXT.setForeground(Color.RED);
+			campoVazio = true;
+		}
+		if(a2TF.getText().isEmpty()) {
+			a2TXT.setForeground(Color.RED);
+			campoVazio = true;
+		}
+		if(b2TF.getText().isEmpty()) {
+			b2TXT.setForeground(Color.RED);
+			campoVazio = true;
+		}
+		if(c2TF.getText().isEmpty()) {
+			c2TXT.setForeground(Color.RED);
+			campoVazio = true;
+		}
+		if(campoVazio) {
+			JOptionPane.showMessageDialog(contentPane,
+				    "Por favor, preencha todos os campos."
+				    + "\n\nCampos de texto vazios foram destacados em vermelho.",
+				    "ERRO - campos vazios",
+				    JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		else {
+			//esses if servem para textar se foi digitado double nos campos de texto
+			if(!isDouble(compVigaTF.getText())) {
+				compVigaTXT.setForeground(Color.RED); //os campos sem double tem a cor de seu título mudada para vermelho
+				stringEmCampo = true;
+			}
+			if(!isDouble(compDistTF.getText())) {
+				compDistTXT.setForeground(Color.RED);
+				stringEmCampo = true;
+			}
+			if(!isDouble(cargConcTF.getText())) {
+				cargConcTXT.setForeground(Color.RED);
+				stringEmCampo = true;
+			}
+			if(!isDouble(cargDistTF.getText())) {
+				cargDistTXT.setForeground(Color.RED);
+				stringEmCampo = true;
+			}
+			if(!isDouble(b1TF.getText())) {
+				b1TXT.setForeground(Color.RED);
+				stringEmCampo = true;
+			}
+			if(!isDouble(c1TF.getText())) {
+				c1TXT.setForeground(Color.RED);
+				stringEmCampo = true;
+			}
+			if(!isDouble(a1TF.getText())) {
+				a1TXT.setForeground(Color.RED);
+				stringEmCampo = true;
+			}
+			if(!isDouble(a2TF.getText())) {
+				a2TXT.setForeground(Color.RED);
+				stringEmCampo = true;
+			}
+			if(!isDouble(b2TF.getText())) {
+				b2TXT.setForeground(Color.RED);
+				stringEmCampo = true;
+			}
+			if(!isDouble(c2TF.getText())) {
+				c2TXT.setForeground(Color.RED);
+				stringEmCampo = true;
+			}
+			if(stringEmCampo) {
+				JOptionPane.showMessageDialog(contentPane,
+					    "Os dados foram fornecidos em um formato não suportado pelo programa."
+					    + "\nPor favor, utilize apenas números (e um ponto) (exemplo: 40.342)."
+					    + "\nNão use vírgula, letras ou caracteres especiais."
+					    + "\n\nCampos de texto com esse problema foram destacados em vermelho.",
+					    "ERRO - formato irreconhecível",
+					    JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+			else {
+				//esses if servem para textar se foi digitado double nos campos de texto
+				if(Double.parseDouble(compVigaTF.getText()) <= 0.0) {
+					compVigaTXT.setForeground(Color.RED); //os campos sem double tem a cor de seu título mudada para vermelho
+					compNega = true;
+				}
+				if(Double.parseDouble(compDistTF.getText()) <= 0.0) {
+					compDistTXT.setForeground(Color.RED);
+					compNega = true;
+				}
+				if(Double.parseDouble(b1TF.getText()) <= 0.0) {
+					b1TXT.setForeground(Color.RED);
+					compNega = true;
+				}
+				if(Double.parseDouble(c1TF.getText()) <= 0.0) {
+					c1TXT.setForeground(Color.RED);
+					compNega = true;
+				}
+				if(Double.parseDouble(a1TF.getText()) <= 0.0) {
+					a1TXT.setForeground(Color.RED);
+					compNega = true;
+				}
+				if(Double.parseDouble(a2TF.getText()) <= 0.0) {
+					a2TXT.setForeground(Color.RED);
+					compNega = true;
+				}
+				if(Double.parseDouble(b2TF.getText()) <= 0.0) {
+					b2TXT.setForeground(Color.RED);
+					compNega = true;
+				}
+				if(Double.parseDouble(c2TF.getText()) <= 0.0) {
+					c2TXT.setForeground(Color.RED);
+					compNega = true;
+				}
+				if(compNega) {
+					JOptionPane.showMessageDialog(contentPane,
+						    "Valores de comprimento não podem ser nulos ou negativos"
+						    + "\nPortanto, para comprimento, forneça apenas valores maiores que zero."
+						    + "\n\nCampos de texto com esse problema foram destacados em vermelho.",
+						    "ERRO - comprimento nulo ou negativo",
+						    JOptionPane.ERROR_MESSAGE);
+					return false;
+				}
+				else {
+					if(Double.parseDouble(compDistTF.getText()) > Double.parseDouble(compVigaTF.getText())){
+						compDistTXT.setForeground(Color.RED);
+						compVigaTXT.setForeground(Color.RED);
+						JOptionPane.showMessageDialog(contentPane,
+							    "O comprimento sobre o qual a carga está distribuída é maior do que o tamanho total da viga."
+							    + "\nPor favor, forneça uma distância entre A e B menor que o tamanho da viga",
+							    "ERRO - força distribuída sobre um comprimento maior que o tamanho da viga",
+							    JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	//testa se o texto fornecido é um double
+	public boolean isDouble(String texto) {
+		try {
+			Double.parseDouble(texto);
+			return true;
+		}
+		catch(NumberFormatException e) {
+			return false;
+		}
+	}
+	
+	//Pinta todos os labels de branco
+	private void allWhite() {
+		compVigaTXT.setForeground(Color.WHITE);
+		compDistTXT.setForeground(Color.WHITE);
+		cargConcTXT.setForeground(Color.WHITE);
+		cargDistTXT.setForeground(Color.WHITE);
+		b1TXT.setForeground(Color.WHITE);
+		c1TXT.setForeground(Color.WHITE);
+		a1TXT.setForeground(Color.WHITE);
+		a2TXT.setForeground(Color.WHITE);
+		b2TXT.setForeground(Color.WHITE);
+		c2TXT.setForeground(Color.WHITE);
+	}
+	
+	//limpa todos os campos de texto
+	private void cleanAll() {
+		compVigaTF.setText(null);
+		compDistTF.setText(null);
+		cargConcTF.setText(null);
+		cargDistTF.setText(null);
+		b1TF.setText(null);
+		c1TF.setText(null);
+		a1TF.setText(null);
+		a2TF.setText(null);
+		b2TF.setText(null);
+		c2TF.setText(null);
+		allWhite();
+	}
+	
+	//retorna a janela atual
+	private JanelaDados getThis() {
+		return this;
+	}
+	
+	public JButton getCalcularBtn() {
+		return calcularBtn;
+	}
+	
+	public JButton getDadosAdicBtn() {
+		return dadosAdicBtn;
+	}
+	
+	public double getCompDist() {
+		return Double.parseDouble(compDistTF.getText());
+	}
+	
+	public double getCompViga() {
+		return Double.parseDouble(compVigaTF.getText());
+	}
+	
+	public double getCargConc() {
+		return Double.parseDouble(cargConcTF.getText());
+	}
+	
+	public double getCargDist() {
+		return Double.parseDouble(cargDistTF.getText());
+	}
+	
+
+	
+}
