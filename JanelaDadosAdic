@@ -1,0 +1,344 @@
+package interfaceGrafica;
+
+import java.awt.Image;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import java.awt.Color;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.ActionEvent;
+
+public class JanelaDadosAdic extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JLabel modElastTXT;
+	private JLabel traMaxTXT;
+	private JLabel compMaxTXT;
+	private JLabel cisaMaxTXT;
+	private JTextField modElastTF;
+	private JTextField traMaxTF;
+	private JTextField compMaxTF;
+	private JTextField cisaMaxTF;
+	//valor -1.0 para essas variáveis abaixo significa que não foi informado um valor
+	private double modElast = -1.0; //módulo de elasticidade do material
+	private double traMax = -1.0; //módulo de tração máximo admissível
+	private double compMax = -1.0; //módulo de compressão máximo admissível
+	private double cisaMax = -1.0; //módulo de cisalhamento máximo admissível
+
+	public JanelaDadosAdic(JanelaDados janela) {
+		
+		JanelaDados janDad = janela;
+		
+		WindowListener exitListener = new WindowAdapter() {
+		    @Override
+		    public void windowClosing(WindowEvent e) {
+		    	janDad.getCalcularBtn().setEnabled(true);
+		    	janDad.getDadosAdicBtn().setEnabled(true);
+		    }
+		};
+		this.addWindowListener(exitListener);
+		
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		setBounds(100, 100, 486, 691);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel titulo = new JLabel("DADOS ADICIONAIS");
+		titulo.setBackground(Color.BLACK);
+		titulo.setForeground(Color.WHITE);
+		titulo.setFont(new Font("Arial Black", Font.BOLD, 35));
+		titulo.setBounds(23, 51, 439, 48);
+		contentPane.add(titulo);
+		
+		modElastTXT = new JLabel("M\u00F3dulo da elasticidade");
+		modElastTXT.setForeground(Color.WHITE);
+		modElastTXT.setFont(new Font("Arial", Font.BOLD, 18));
+		modElastTXT.setBounds(46, 162, 416, 24);
+		contentPane.add(modElastTXT);
+		
+		modElastTF = new JTextField();
+		modElastTF.setBackground(Color.BLACK);
+		modElastTF.setForeground(Color.WHITE);
+		modElastTF.setFont(new Font("Arial", Font.BOLD, 16));
+		modElastTF.setBounds(34, 197, 389, 32);
+		contentPane.add(modElastTF);
+		modElastTF.setColumns(10);
+		modElastTF.setDocument(new Limitador(8));
+		
+		traMaxTXT = new JLabel("Tens\u00E3o de tra\u00E7\u00E3o m\u00E1xima (em kPa)");
+		traMaxTXT.setForeground(Color.WHITE);
+		traMaxTXT.setFont(new Font("Arial", Font.BOLD, 18));
+		traMaxTXT.setBounds(46, 252, 404, 24);
+		contentPane.add(traMaxTXT);
+		
+		traMaxTF = new JTextField();
+		traMaxTF.setForeground(Color.WHITE);
+		traMaxTF.setFont(new Font("Arial", Font.BOLD, 16));
+		traMaxTF.setColumns(10);
+		traMaxTF.setBackground(Color.BLACK);
+		traMaxTF.setBounds(34, 287, 389, 32);
+		contentPane.add(traMaxTF);
+		traMaxTF.setDocument(new Limitador(8));
+		
+		compMaxTXT = new JLabel("Tens\u00E3o de compress\u00E3o m\u00E1xima (em kPa)");
+		compMaxTXT.setForeground(Color.WHITE);
+		compMaxTXT.setFont(new Font("Arial", Font.BOLD, 18));
+		compMaxTXT.setBounds(46, 335, 404, 24);
+		contentPane.add(compMaxTXT);
+		
+		compMaxTF = new JTextField();
+		compMaxTF.setForeground(Color.WHITE);
+		compMaxTF.setFont(new Font("Arial", Font.BOLD, 16));
+		compMaxTF.setColumns(10);
+		compMaxTF.setBackground(Color.BLACK);
+		compMaxTF.setBounds(34, 370, 389, 32);
+		contentPane.add(compMaxTF);
+		compMaxTF.setDocument(new Limitador(8));
+		
+		cisaMaxTXT = new JLabel("Tens\u00E3o de cisalhamento m\u00E1xima. (em kPa)");
+		cisaMaxTXT.setForeground(Color.WHITE);
+		cisaMaxTXT.setFont(new Font("Arial", Font.BOLD, 18));
+		cisaMaxTXT.setBounds(44, 421, 404, 24);
+		contentPane.add(cisaMaxTXT);
+		
+		cisaMaxTF = new JTextField();
+		cisaMaxTF.setForeground(Color.WHITE);
+		cisaMaxTF.setFont(new Font("Arial", Font.BOLD, 16));
+		cisaMaxTF.setColumns(10);
+		cisaMaxTF.setBackground(Color.BLACK);
+		cisaMaxTF.setBounds(34, 456, 389, 32);
+		contentPane.add(cisaMaxTF);
+		cisaMaxTF.setDocument(new Limitador(8));
+		
+		//Botões presentes na janela
+		
+		JButton confirmarBtn = new JButton("Confirmar");
+		confirmarBtn.setBackground(Color.LIGHT_GRAY);
+		confirmarBtn.setForeground(Color.BLACK);
+		confirmarBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				confirmarBtn.setEnabled(false);
+				allWhite();
+				if(verificarDados()) {
+					getThis().setVisible(false);
+			    	janDad.getCalcularBtn().setEnabled(true);
+			    	janDad.getDadosAdicBtn().setEnabled(true);
+				}
+				confirmarBtn.setEnabled(true);
+			}
+		});
+		confirmarBtn.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		confirmarBtn.setBounds(278, 583, 179, 38);
+		confirmarBtn.setFocusPainted(false);
+		contentPane.add(confirmarBtn);
+		
+		JButton LimparDadosBtn = new JButton("Limpar dados");
+		LimparDadosBtn.setBackground(Color.LIGHT_GRAY);
+		LimparDadosBtn.setForeground(Color.BLACK);
+		LimparDadosBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cleanAll();
+			}
+		});
+		LimparDadosBtn.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		LimparDadosBtn.setFocusPainted(false);
+		LimparDadosBtn.setBounds(23, 583, 179, 38);
+		contentPane.add(LimparDadosBtn);
+		
+		JLabel observacaoTXT = new JLabel("<html>Observa\u00E7\u00E3o: Esses dados n\u00E3o s\u00E3o obrigat\u00F3rios."
+				+ " N\u00E3o \u00E9 necess\u00E1rio<br> preencher todos os campos para poder confirmar, alguns poder\u00E3o<br> ficar vazios."
+				+ " Informe apenas o m\u00F3dulo das tens\u00F5es.</html>");
+		observacaoTXT.setForeground(Color.WHITE);
+		observacaoTXT.setFont(new Font("Arial", Font.PLAIN, 12));
+		observacaoTXT.setBounds(34, 499, 389, 61);
+		contentPane.add(observacaoTXT);
+		
+		JLabel fundo = new JLabel("");
+		fundo.setBounds(0, 0, 729, 726);
+		contentPane.add(fundo);
+		this.setResizable(false);
+		Image fundoDadAd = new ImageIcon(this.getClass().getResource("/fundoDadAd.png")).getImage();
+		fundo.setIcon(new ImageIcon(fundoDadAd));
+	}
+	
+	//pinta todos os títulos de branco
+	private void allWhite() {
+		modElastTXT.setForeground(Color.WHITE);
+		traMaxTXT.setForeground(Color.WHITE);
+		compMaxTXT.setForeground(Color.WHITE);
+		cisaMaxTXT.setForeground(Color.WHITE);
+	}
+	
+	//limpa todos os campos de texto
+	private void cleanAll() {
+		modElastTF.setText(null);
+		traMaxTF.setText(null);
+		compMaxTF.setText(null);
+		cisaMaxTF.setText(null);
+		allWhite();
+	}
+	
+	/*
+	 * Para parâmetro true, faz com que a janela fique visível e preenche os campos de texto com os valores armazenados
+	 * para parâmentro false, deixa a janela invisível
+	 */
+	public void setVisible(boolean simOuNao) {
+		if(simOuNao) {
+			super.setVisible(true);
+			cleanAll();
+			if(modElast > 0.0)
+			modElastTF.setText(String.valueOf(modElast));
+			if(traMax > 0.0)
+			traMaxTF.setText(String.valueOf(traMax));
+			if(compMax > 0.0)
+			compMaxTF.setText(String.valueOf(compMax));
+			if(cisaMax > 0.0)
+			cisaMaxTF.setText(String.valueOf(cisaMax));;
+		}
+		else {
+			super.setVisible(false);
+			
+		}
+	}
+	
+	public boolean verificarDados() {
+		boolean stringEmCampo = false; //se for digitado uma string em um campo de texto, esse valor será alterado para true
+		boolean negativoOuNulo = false; //se for fornecido um valor negativo ou nulo, essa variável será alterada para true
+		//os 4 if abaixo testam se o que foi digitado no campo é double
+		if(!isDouble(modElastTF.getText()) && !modElastTF.getText().isEmpty()) {
+			modElastTXT.setForeground(Color.RED);
+			stringEmCampo = true;
+		}
+		if(!isDouble(traMaxTF.getText())&& !traMaxTF.getText().isEmpty()) {
+			traMaxTXT.setForeground(Color.RED);
+			stringEmCampo = true;
+		}
+		if(!isDouble(compMaxTF.getText()) && !compMaxTF.getText().isEmpty()) {
+			compMaxTXT.setForeground(Color.RED);
+			stringEmCampo = true;
+		}
+		if(!isDouble(cisaMaxTF.getText()) && !cisaMaxTF.getText().isEmpty()) {
+			cisaMaxTXT.setForeground(Color.RED);
+			stringEmCampo = true;
+		}
+		if(stringEmCampo) {
+			JOptionPane.showMessageDialog(contentPane,
+				    "Os dados foram fornecidos em um formato não suportado pelo programa."
+				    + "\nPor favor, utilize apenas números (e um ponto) (exemplo: 40.342)."
+				    + "\nNão use vírgula, letras ou caracteres especiais."
+				    + "\n\nCampos de texto com esse problema foram destacados em vermelho.",
+				    "ERRO - formato irreconhecível",
+				    JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		else {
+			//Se o que foi digitado for double, of if abaixo testam se é maior do que 0
+			if(!modElastTF.getText().isEmpty())
+				if(Double.parseDouble(modElastTF.getText()) <= 0.0) {
+					modElastTXT.setForeground(Color.RED);
+					negativoOuNulo = true;
+				}
+			if(!traMaxTF.getText().isEmpty())
+				if(Double.parseDouble(traMaxTF.getText()) <= 0.0) {
+					traMaxTXT.setForeground(Color.RED);
+					negativoOuNulo = true;
+				}
+			if(!compMaxTF.getText().isEmpty())
+				if(Double.parseDouble(compMaxTF.getText()) <= 0.0) {
+					compMaxTXT.setForeground(Color.RED);
+					negativoOuNulo = true;
+				}
+			if(!cisaMaxTF.getText().isEmpty())
+				if(Double.parseDouble(cisaMaxTF.getText()) <= 0.0) {
+					cisaMaxTXT.setForeground(Color.RED);
+					negativoOuNulo = true;
+				}
+			if(negativoOuNulo) {
+				JOptionPane.showMessageDialog(contentPane,
+					    "Informe apenas valores positivos para os dados dessa janela."
+						+ "\nDigite somente a magnitude das tensões, não é necessário informar os sinais."
+					    + "\n\nCampos de texto problemáticos foram destacados em vermelho.",
+					    "ERRO - valores inválidos",
+					    JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+			//parte responsável por coletar os dados
+			else {
+				/*Essa parte testa se os campos de texto estão vazios.
+				 *Os que estiverem em branco terão seus valores relacionados mudados para -1.0.
+				 *Aqui, valor -1.0 significa que não foi informado.
+				 *Quando o campo de texto não estiver em branco, o valor relacionado a esse campo será atualizado
+				 *com a informação fornecida.
+				 */
+				if(modElastTF.getText().isEmpty())
+					modElast = -1.0;
+				else
+					modElast = Double.parseDouble(modElastTF.getText());
+				
+				if(traMaxTF.getText().isEmpty())
+					traMax = -1.0;
+				else
+					traMax = Double.parseDouble(traMaxTF.getText());
+				
+				if(compMaxTF.getText().isEmpty())
+					compMax = -1.0;
+				else
+					compMax = Double.parseDouble(compMaxTF.getText());
+				
+				if(cisaMaxTF.getText().isEmpty())
+					cisaMax = -1.0;
+				else
+					cisaMax = Double.parseDouble(cisaMaxTF.getText());
+				
+				return true;
+			}
+		}
+	}
+	
+	//testa se o texto fornecido é um double
+	public boolean isDouble(String texto) {
+		try {
+			Double.parseDouble(texto);
+			return true;
+		}
+		catch(NumberFormatException e) {
+			return false;
+		}
+	}
+	
+	public JanelaDadosAdic getThis() {
+		return this;
+	}
+	
+	//métodos get
+	
+	public double getModElast() {
+		return modElast;
+	}
+	
+	public double getTraMax() {
+		return traMax;
+	}
+	
+	public double getcompMax() {
+		return compMax;
+	}
+	
+	public double getcisaMax() {
+		return cisaMax;
+	}
+}
