@@ -56,6 +56,10 @@ public class JanelaResultados extends JFrame {
 	private JLabel traMaxTXT;
 	private JLabel cisaMaxTXT;
 	private JLabel fundo;
+	private JLabel diagramaVTXT;
+	private JLabel diagramaMTXT;
+	private JLabel diagramaSigmaTXT;
+	private JLabel diagramaTauTXT;
 	private JTextField posCorteTF;
 	private JButton confirmarBtn;
 	private ChartPanel ForCisaChartPanel;
@@ -87,6 +91,7 @@ public class JanelaResultados extends JFrame {
 		};
 		this.addWindowListener(exitListener);
 		
+		//aqui
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 1191, 685);
 		contentPane = new JPanel();
@@ -105,6 +110,7 @@ public class JanelaResultados extends JFrame {
 		panel.setLayout(null);
 		scrollPane.setViewportView(panel);
 		panel.setPreferredSize(new Dimension(1168, 1598));
+		//aqui
 		
 		JButton voltarBtn = new JButton("");
 		voltarBtn.addActionListener(new ActionListener() {
@@ -113,6 +119,7 @@ public class JanelaResultados extends JFrame {
 				janDad.setVisible(true);
 			}
 		});
+		
 		voltarBtn.setBounds(22, 22, 75, 75);
 		panel.add(voltarBtn);
 		voltarBtn.setOpaque(false);
@@ -197,7 +204,7 @@ public class JanelaResultados extends JFrame {
 		c2TXT.setBounds(969, 440, 168, 14);
 		panel.add(c2TXT);
 		
-		JLabel observacao = new JLabel("*Observa\u00E7\u00E3o:  os comprimentos das figuras n\u00E3o est\u00E3o em propor\u00E7\u00E3o.");
+		JLabel observacao = new JLabel("Observa\u00E7\u00E3o: os comprimentos das figuras est\u00E3o fora de escala.");
 		observacao.setForeground(Color.LIGHT_GRAY);
 		observacao.setFont(new Font("Arial", Font.PLAIN, 11));
 		observacao.setBackground(Color.WHITE);
@@ -244,6 +251,18 @@ public class JanelaResultados extends JFrame {
 		tituloVEM.setBounds(22, 931, 879, 46);
 		panel.add(tituloVEM);
 		
+		diagramaVTXT = new JLabel();
+		diagramaVTXT.setForeground(Color.LIGHT_GRAY);
+		diagramaVTXT.setFont(new Font("Arial", Font.PLAIN, 18));
+		diagramaVTXT.setBounds(40, 985, 416, 24);
+		panel.add(diagramaVTXT);
+		
+		diagramaMTXT = new JLabel();
+		diagramaMTXT.setForeground(Color.LIGHT_GRAY);
+		diagramaMTXT.setFont(new Font("Arial", Font.PLAIN, 18));
+		diagramaMTXT.setBounds(592, 985, 416, 24);
+		panel.add(diagramaMTXT);
+		
 		//Parte final da janela
 		
 		JLabel tituloCorte = new JLabel("Diagramas da tens\u00E3o normal e tens\u00E3o cisalhante para um dado corte:");
@@ -266,6 +285,18 @@ public class JanelaResultados extends JFrame {
 		posCorteTF.setBounds(40, 1519, 579, 31);
 		panel.add(posCorteTF);
 		posCorteTF.setColumns(10);
+		
+		diagramaSigmaTXT = new JLabel();
+		diagramaSigmaTXT.setForeground(Color.LIGHT_GRAY);
+		diagramaSigmaTXT.setFont(new Font("Arial", Font.PLAIN, 18));
+		diagramaSigmaTXT.setBounds(40, 1602, 416, 24);
+		panel.add(diagramaSigmaTXT);
+		
+		diagramaTauTXT = new JLabel();
+		diagramaTauTXT.setForeground(Color.LIGHT_GRAY);
+		diagramaTauTXT.setFont(new Font("Arial", Font.PLAIN, 18));
+		diagramaTauTXT.setBounds(592, 1602, 416, 24);
+		panel.add(diagramaTauTXT);
 		
 		compMaxTXT = new JLabel();
 		compMaxTXT.setForeground(Color.LIGHT_GRAY);
@@ -333,6 +364,11 @@ public class JanelaResultados extends JFrame {
 					);
 			
 			preencher(); //preenche os títulos com os dados da janelaDados
+			
+			diagramaVTXT.setText("Diagrama do esforço cortante (em " + unidMed + ")");
+			diagramaMTXT.setText("Diagrama do momento fletor (em " + unidMed + ".m)");
+			diagramaSigmaTXT.setText("Diagrama da tensão normal (em " + unidMedTen + ")");
+			diagramaTauTXT.setText("Diagrama da tensao de cisalhamento (em " + unidMedTen + ")");
 			
 			//criação do gráfico de esforço cortante
 			JFreeChart forCisaChart = ChartFactory.createXYLineChart(null, "Posição do corte (em m)", "Esforço cortante (em " + unidMed + ")", forCisaDataset(), PlotOrientation.VERTICAL, false, false, false);
@@ -410,7 +446,7 @@ public class JanelaResultados extends JFrame {
 		}
 		
 		//criação do gráfico da tensão normal
-		JFreeChart tenNormChart = ChartFactory.createXYLineChart(null, "Altura (em mm)", "Tensão normal " + unidMed, tenNormDataset(posicao), PlotOrientation.VERTICAL, false, false, false);
+		JFreeChart tenNormChart = ChartFactory.createXYLineChart(null, "Altura (em mm)", "Tensão normal (em " + unidMedTen + ")", tenNormDataset(posicao), PlotOrientation.VERTICAL, false, false, false);
 
 		//parte que coloca o gráfico da tensão normal no painel após definir a posição e o tamanho
 		tenNormChartPanel = new ChartPanel(tenNormChart);
@@ -418,7 +454,7 @@ public class JanelaResultados extends JFrame {
 		tenNormChartPanel.setBounds(40, 1632, 528, 316);
 		
 		//criação do gráfico de tensão cisalhante
-		JFreeChart tenCisaChart = ChartFactory.createXYLineChart(null, "Altura (em mm)", "Tensao de cisalhamento " + unidMed, tenCisaDataset(posicao), PlotOrientation.VERTICAL, false, false, false);
+		JFreeChart tenCisaChart = ChartFactory.createXYLineChart(null, "Altura (em mm)", "Tensao de cisalhamento (em " + unidMedTen + ")", tenCisaDataset(posicao), PlotOrientation.VERTICAL, false, false, false);
 
 		//parte que coloca o gráfico da tensão cisalhante no painel após definir a posição e o tamanho
 		tenCisaChartPanel = new ChartPanel(tenCisaChart);
@@ -514,13 +550,13 @@ public class JanelaResultados extends JFrame {
 	private XYDataset tenNormDataset(double posicao) {
 		
 		final XYSeries tenNormDataset = new XYSeries("Tensão normal");
-		double deltaAltura = (janDad.getB1() + janDad.getA1() + janDad.getB2()) / 800.0;
+		double deltaAltura = ((janDad.getC1() + janDad.getA1() + janDad.getC2()) * 0.001) / 800.0;
 		double valorAtual = 0.0;
 		
-		for(double i = 0.0; i <= janDad.getB1() + janDad.getA1() + janDad.getB2(); i += deltaAltura) {
+		for(double i = 0.0; i <= (janDad.getC1() + janDad.getA1() + janDad.getC2()) * 0.001; i += deltaAltura) {
 
 			valorAtual = calcula.calcSigma(i, posicao) * 0.001;
-			tenNormDataset.add(i, valorAtual); //800 pontos como informação para preencher o gráfico
+			tenNormDataset.add(i * 1000, valorAtual); //800 pontos como informação para preencher o gráfico
 
 			
 			if(valorAtual >= 0) //testa se o valor atual é de compressão
@@ -542,15 +578,15 @@ public class JanelaResultados extends JFrame {
 	private XYDataset tenCisaDataset(double posicao) {
 		
 		final XYSeries tenCisaDataset = new XYSeries("Tensão de cisalhamento");
-		double deltaAltura = (janDad.getB1() + janDad.getA1() + janDad.getB2()) / 800.0;
+		double deltaAltura = ((janDad.getC1() + janDad.getA1() + janDad.getC2()) * 0.001) / 800.0;
 		double valorAtual = 0.0;
 		double valorMin = 0.0;
 		double valorMax = 0.0;
 		
-		for(double i = 0.0; i <= janDad.getB1() + janDad.getA1() + janDad.getB2(); i += deltaAltura) {
+		for(double i = 0.0; i <= (janDad.getC1() + janDad.getA1() + janDad.getC2()) * 0.001; i += deltaAltura) {
 
 			valorAtual = calcula.calcTau(i, posicao) * 0.001;
-			tenCisaDataset.add(i, valorAtual); //800 pontos como informação para preencher o gráfico
+			tenCisaDataset.add(i * 1000, valorAtual); //800 pontos como informação para preencher o gráfico
 
 			if(valorAtual > valorMax) //testa se o valor atual é maior do que o valor máximo encontrado anteriormente
 				valorMax = valorAtual;
