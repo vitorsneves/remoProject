@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.text.DecimalFormat;
 import java.awt.event.ActionEvent;
 
 public class JanelaDadosAdic extends JFrame {
@@ -36,6 +37,9 @@ public class JanelaDadosAdic extends JFrame {
 	private double traMax = -1.0; //módulo de tração máximo admissível
 	private double compMax = -1.0; //módulo de compressão máximo admissível
 	private double cisaMax = -1.0; //módulo de cisalhamento máximo admissível
+	private String unidMed; //unidade de medida da força (kN, kgf)
+	private String unidMedTen; //unidade de medida da tenção (MPa, tf/m²)
+	private DecimalFormat formato = new DecimalFormat("#");
 
 	public JanelaDadosAdic(JanelaDados janela) {
 		
@@ -56,6 +60,7 @@ public class JanelaDadosAdic extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		this.setResizable(false);
 		
 		JLabel titulo = new JLabel("DADOS ADICIONAIS");
 		titulo.setBackground(Color.BLACK);
@@ -77,9 +82,9 @@ public class JanelaDadosAdic extends JFrame {
 		modElastTF.setBounds(34, 197, 389, 32);
 		contentPane.add(modElastTF);
 		modElastTF.setColumns(10);
-		modElastTF.setDocument(new Limitador(8));
+		modElastTF.setDocument(new Limitador(10));
 		
-		traMaxTXT = new JLabel("Tens\u00E3o de tra\u00E7\u00E3o m\u00E1xima (em kPa)");
+		traMaxTXT = new JLabel();
 		traMaxTXT.setForeground(Color.WHITE);
 		traMaxTXT.setFont(new Font("Arial", Font.BOLD, 18));
 		traMaxTXT.setBounds(46, 252, 404, 24);
@@ -92,9 +97,9 @@ public class JanelaDadosAdic extends JFrame {
 		traMaxTF.setBackground(Color.BLACK);
 		traMaxTF.setBounds(34, 287, 389, 32);
 		contentPane.add(traMaxTF);
-		traMaxTF.setDocument(new Limitador(8));
+		traMaxTF.setDocument(new Limitador(10));
 		
-		compMaxTXT = new JLabel("Tens\u00E3o de compress\u00E3o m\u00E1xima (em kPa)");
+		compMaxTXT = new JLabel();
 		compMaxTXT.setForeground(Color.WHITE);
 		compMaxTXT.setFont(new Font("Arial", Font.BOLD, 18));
 		compMaxTXT.setBounds(46, 335, 404, 24);
@@ -107,9 +112,9 @@ public class JanelaDadosAdic extends JFrame {
 		compMaxTF.setBackground(Color.BLACK);
 		compMaxTF.setBounds(34, 370, 389, 32);
 		contentPane.add(compMaxTF);
-		compMaxTF.setDocument(new Limitador(8));
+		compMaxTF.setDocument(new Limitador(10));
 		
-		cisaMaxTXT = new JLabel("Tens\u00E3o de cisalhamento m\u00E1xima. (em kPa)");
+		cisaMaxTXT = new JLabel("Tens\u00E3o de cisalhamento m\u00E1xima. (em ");
 		cisaMaxTXT.setForeground(Color.WHITE);
 		cisaMaxTXT.setFont(new Font("Arial", Font.BOLD, 18));
 		cisaMaxTXT.setBounds(44, 421, 404, 24);
@@ -122,7 +127,7 @@ public class JanelaDadosAdic extends JFrame {
 		cisaMaxTF.setBackground(Color.BLACK);
 		cisaMaxTF.setBounds(34, 456, 389, 32);
 		contentPane.add(cisaMaxTF);
-		cisaMaxTF.setDocument(new Limitador(8));
+		cisaMaxTF.setDocument(new Limitador(10));
 		
 		//Botões presentes na janela
 		
@@ -168,10 +173,9 @@ public class JanelaDadosAdic extends JFrame {
 		contentPane.add(observacaoTXT);
 		
 		JLabel fundo = new JLabel("");
-		fundo.setBounds(0, 0, 729, 726);
+		fundo.setBounds(0, -64, 729, 726);
 		contentPane.add(fundo);
-		this.setResizable(false);
-		Image fundoDadAd = new ImageIcon(this.getClass().getResource("/fundoDadAd.png")).getImage();
+		Image fundoDadAd = new ImageIcon(this.getClass().getResource("/fundoDadAd.jpg")).getImage();
 		fundo.setIcon(new ImageIcon(fundoDadAd));
 	}
 	
@@ -198,20 +202,42 @@ public class JanelaDadosAdic extends JFrame {
 	 */
 	public void setVisible(boolean simOuNao) {
 		if(simOuNao) {
-			super.setVisible(true);
 			cleanAll();
+			
+			traMaxTXT.setText("Tens\u00E3o de tra\u00E7\u00E3o m\u00E1xima (em " + unidMedTen + ")");
+			compMaxTXT.setText("Tens\u00E3o de compress\u00E3o m\u00E1xima (em " + unidMedTen + ")");
+			cisaMaxTXT.setText("Tens\u00E3o de cisalhamento m\u00E1xima. (em "+ unidMedTen + ")");
+			modElastTXT.setText("M\u00F3dulo da elasticidade (em " + unidMed + "/m²");
+			
+			
 			if(modElast > 0.0)
-			modElastTF.setText(String.valueOf(modElast));
+				if(isInteger(modElast))
+					modElastTF.setText(formato.format(modElast));
+				else
+					modElastTF.setText(String.valueOf(modElast));
+			
 			if(traMax > 0.0)
-			traMaxTF.setText(String.valueOf(traMax));
+				if(isInteger(traMax))
+					traMaxTF.setText(formato.format(traMax));
+				else
+					traMaxTF.setText(String.valueOf(traMax));
+			
 			if(compMax > 0.0)
-			compMaxTF.setText(String.valueOf(compMax));
+				if(isInteger(compMax))
+					compMaxTF.setText(formato.format(compMax));
+				else
+					compMaxTF.setText(String.valueOf(compMax));
+			
 			if(cisaMax > 0.0)
-			cisaMaxTF.setText(String.valueOf(cisaMax));;
+				if(isInteger(cisaMax))
+					cisaMaxTF.setText(formato.format(cisaMax));
+				else
+					cisaMaxTF.setText(String.valueOf(cisaMax));
+			
+			super.setVisible(true);
 		}
 		else {
 			super.setVisible(false);
-			
 		}
 	}
 	
@@ -320,6 +346,15 @@ public class JanelaDadosAdic extends JFrame {
 		}
 	}
 	
+	//testa se o texto fornecido é um inteiro
+	public boolean isInteger(double valor) {
+		
+		if(valor == Math.floor(valor))
+			return true;
+		
+		return false;
+	}
+	
 	public JanelaDadosAdic getThis() {
 		return this;
 	}
@@ -334,11 +369,19 @@ public class JanelaDadosAdic extends JFrame {
 		return traMax;
 	}
 	
-	public double getcompMax() {
+	public double getCompMax() {
 		return compMax;
 	}
 	
-	public double getcisaMax() {
+	public double getCisaMax() {
 		return cisaMax;
+	}
+	
+	public void setUnidMed(String unidMed) {
+		this.unidMed = unidMed;
+	}
+	
+	public void setUnidMedTen(String unidMedTen) {
+		this.unidMedTen = unidMedTen;
 	}
 }
