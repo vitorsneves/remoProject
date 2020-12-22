@@ -67,6 +67,7 @@ public class Calculadora {
 	//para um corte na posição dada, calcula a tensão de cisalhamento na "altura"
 	public double calcTau(double altura, double posicao) {
 		return (calcV(posicao) * area.calcQ(altura)) / (area.getI() * area.largura(altura));
+
 	}
 	
 	//métodos set e get
