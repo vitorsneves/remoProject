@@ -72,7 +72,7 @@ public class JanelaDadosAdic extends JFrame {
 		modElastTXT = new JLabel("M\u00F3dulo da elasticidade");
 		modElastTXT.setForeground(Color.WHITE);
 		modElastTXT.setFont(new Font("Arial", Font.BOLD, 18));
-		modElastTXT.setBounds(46, 162, 416, 24);
+		modElastTXT.setBounds(46, 167, 416, 24);
 		contentPane.add(modElastTXT);
 		
 		modElastTF = new JTextField();
@@ -87,7 +87,7 @@ public class JanelaDadosAdic extends JFrame {
 		traMaxTXT = new JLabel();
 		traMaxTXT.setForeground(Color.WHITE);
 		traMaxTXT.setFont(new Font("Arial", Font.BOLD, 18));
-		traMaxTXT.setBounds(46, 252, 404, 24);
+		traMaxTXT.setBounds(46, 252, 416, 24);
 		contentPane.add(traMaxTXT);
 		
 		traMaxTF = new JTextField();
@@ -95,14 +95,14 @@ public class JanelaDadosAdic extends JFrame {
 		traMaxTF.setFont(new Font("Arial", Font.BOLD, 16));
 		traMaxTF.setColumns(10);
 		traMaxTF.setBackground(Color.BLACK);
-		traMaxTF.setBounds(34, 287, 389, 32);
+		traMaxTF.setBounds(34, 282, 389, 32);
 		contentPane.add(traMaxTF);
 		traMaxTF.setDocument(new Limitador(10));
 		
 		compMaxTXT = new JLabel();
 		compMaxTXT.setForeground(Color.WHITE);
 		compMaxTXT.setFont(new Font("Arial", Font.BOLD, 18));
-		compMaxTXT.setBounds(46, 335, 404, 24);
+		compMaxTXT.setBounds(46, 337, 416, 24);
 		contentPane.add(compMaxTXT);
 		
 		compMaxTF = new JTextField();
@@ -110,14 +110,14 @@ public class JanelaDadosAdic extends JFrame {
 		compMaxTF.setFont(new Font("Arial", Font.BOLD, 16));
 		compMaxTF.setColumns(10);
 		compMaxTF.setBackground(Color.BLACK);
-		compMaxTF.setBounds(34, 370, 389, 32);
+		compMaxTF.setBounds(34, 367, 389, 32);
 		contentPane.add(compMaxTF);
 		compMaxTF.setDocument(new Limitador(10));
 		
 		cisaMaxTXT = new JLabel("Tens\u00E3o de cisalhamento m\u00E1xima. (em ");
 		cisaMaxTXT.setForeground(Color.WHITE);
 		cisaMaxTXT.setFont(new Font("Arial", Font.BOLD, 18));
-		cisaMaxTXT.setBounds(44, 421, 404, 24);
+		cisaMaxTXT.setBounds(44, 422, 416, 24);
 		contentPane.add(cisaMaxTXT);
 		
 		cisaMaxTF = new JTextField();
@@ -125,7 +125,7 @@ public class JanelaDadosAdic extends JFrame {
 		cisaMaxTF.setFont(new Font("Arial", Font.BOLD, 16));
 		cisaMaxTF.setColumns(10);
 		cisaMaxTF.setBackground(Color.BLACK);
-		cisaMaxTF.setBounds(34, 456, 389, 32);
+		cisaMaxTF.setBounds(34, 452, 389, 32);
 		contentPane.add(cisaMaxTF);
 		cisaMaxTF.setDocument(new Limitador(10));
 		
@@ -207,7 +207,7 @@ public class JanelaDadosAdic extends JFrame {
 			traMaxTXT.setText("Tens\u00E3o de tra\u00E7\u00E3o m\u00E1xima (em " + unidMedTen + ")");
 			compMaxTXT.setText("Tens\u00E3o de compress\u00E3o m\u00E1xima (em " + unidMedTen + ")");
 			cisaMaxTXT.setText("Tens\u00E3o de cisalhamento m\u00E1xima. (em "+ unidMedTen + ")");
-			modElastTXT.setText("M\u00F3dulo da elasticidade (em " + unidMed + "/m²");
+			modElastTXT.setText("M\u00F3dulo da elasticidade (em " + unidMed + "/m²)");
 			
 			
 			if(modElast > 0.0)
