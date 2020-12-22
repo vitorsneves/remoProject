@@ -1,6 +1,10 @@
 package interfaceGrafica;
 
 import java.awt.Image;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.text.DecimalFormat;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -16,113 +20,181 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import calculo.Calculadora;
+import calculo.SecTransversal;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Dimension;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
+import javax.swing.JScrollPane;
 
 public class JanelaResultados extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private JPanel panel;
+	private JScrollPane scrollPane;
+	private JLabel compVigaTXT;
+	private JLabel compDistTXT;
+	private JLabel cargaConcTXT;
+	private JLabel cargaDistTXT;
+	private JLabel b1TXT;
+	private JLabel c1TXT;
+	private JLabel a1TXT;
+	private JLabel a2TXT;
+	private JLabel b2TXT;
+	private JLabel c2TXT;
+	private JLabel ayTXT;
+	private JLabel maTXT;
+	private JLabel compMaxTXT;
+	private JLabel traMaxTXT;
+	private JLabel cisaMaxTXT;
+	private JLabel fundo;
+	private JTextField posCorteTF;
+	private JButton confirmarBtn;
+	private ChartPanel ForCisaChartPanel;
+	private ChartPanel momFletChartPanel;
+	private ChartPanel tenNormChartPanel;
+	private ChartPanel tenCisaChartPanel;
+	private boolean tamanhoNormal = true; //se o tamanho da janela for o original (sem os dois gráficos adicionais de tensão) essa variável fica como true
+	private double traMaxCalc = 0.0; //tensão de tração máxima encontrada durante os cálculos
+	private double compMaxCalc = 0.0; //tensão de compressão máxima encontrada durante os cálculos
+	private double cisaMaxCalc = 0.0; //tensão de cisalhamento máxima encontrada durante os cálculos
+	private String unidMed; //unidade de medida da força (kN, kgf)
+	private String unidMedTen; //unidade de medida da tenção (MPa, tf/m²)
 	private JanelaDados janDad;
 	private Calculadora calcula;
-	private JPanel panel;
-	JLabel fundo;
-	Image fundoPronto02;
+	private DecimalFormat formato = new DecimalFormat("#.#########");
 	
 	public JanelaResultados(JanelaDados janDad) {
-		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 1174, 3167);
+		
+		this.janDad = janDad;
+		
+		
+		WindowListener exitListener = new WindowAdapter() {
+		    @Override
+		    public void windowClosing(WindowEvent e) {
+				setVisible(false);
+				janDad.setVisible(true);
+				janDad.getCalcularBtn().setEnabled(true);
+		    }
+		};
+		this.addWindowListener(exitListener);
+		
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setBounds(100, 100, 1191, 685);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		this.setResizable(false);
 		
-		//JPanel que será colocar no scrollPanel
-		panel = new JPanel();
-		panel.setBounds(10, -269, 1500, 4000);
-		contentPane.add(panel);
-		panel.setLayout(null);
-		//panel.setPreferredSize(new Dimension(1050, 4000));
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(0, 0, 1176, 685);
+		contentPane.add(scrollPane);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(20);
 		
-		this.janDad = janDad;
+		//JPanel que será colocado no scrollPanel
+		panel = new JPanel();
+		panel.setLayout(null);
+		scrollPane.setViewportView(panel);
+		panel.setPreferredSize(new Dimension(1168, 1598));
+		
+		JButton voltarBtn = new JButton("");
+		voltarBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				janDad.setVisible(true);
+			}
+		});
+		voltarBtn.setBounds(22, 22, 75, 75);
+		panel.add(voltarBtn);
+		voltarBtn.setOpaque(false);
+		voltarBtn.setContentAreaFilled(false);
+		voltarBtn.setBorderPainted(false);
+		Image voltarBtnImagem = new ImageIcon(this.getClass().getResource("/voltarBtnImagem.png")).getImage();
+		voltarBtn.setIcon(new ImageIcon(voltarBtnImagem));
 		
 		JLabel tituloResultados = new JLabel("RESULTADOS");
 		tituloResultados.setForeground(Color.WHITE);
 		tituloResultados.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 66));
-		tituloResultados.setBounds(22, 11, 423, 82);
+		tituloResultados.setBounds(137, 15, 423, 82);
 		panel.add(tituloResultados);
 		
 		//Textos do digrama
 		//possuem os dados anteriormente fornecidos pelo usuário
 		
 		JLabel tituloDiagramas = new JLabel("Representa\u00E7\u00E3o do problema com os dados fornecidos:");
-		tituloDiagramas.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		tituloDiagramas.setFont(new Font("Arial", Font.PLAIN, 24));
 		tituloDiagramas.setForeground(Color.WHITE);
 		tituloDiagramas.setBackground(Color.WHITE);
-		tituloDiagramas.setBounds(22, 143, 449, 46);
+		tituloDiagramas.setBounds(22, 129, 659, 46);
 		panel.add(tituloDiagramas);
 		
-		JLabel compVigaTXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		compVigaTXT = new JLabel();
 		compVigaTXT.setForeground(Color.WHITE);
 		compVigaTXT.setFont(new Font("Arial", Font.PLAIN, 16));
-		compVigaTXT.setBounds(227, 480, 154, 14);
+		compVigaTXT.setBounds(273, 479, 177, 14);
 		panel.add(compVigaTXT);
 		
-		JLabel compDistTXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		compDistTXT = new JLabel();
 		compDistTXT.setForeground(Color.WHITE);
 		compDistTXT.setFont(new Font("Arial", Font.PLAIN, 16));
-		compDistTXT.setBounds(150, 440, 154, 14);
+		compDistTXT.setBounds(153, 440, 168, 14);
 		panel.add(compDistTXT);
 		
-		JLabel cargConcTXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
-		cargConcTXT.setForeground(Color.WHITE);
-		cargConcTXT.setFont(new Font("Arial", Font.PLAIN, 16));
-		cargConcTXT.setBounds(515, 270, 154, 14);
-		panel.add(cargConcTXT);
+		cargaConcTXT = new JLabel();
+		cargaConcTXT.setForeground(Color.WHITE);
+		cargaConcTXT.setFont(new Font("Arial", Font.PLAIN, 16));
+		cargaConcTXT.setBounds(528, 276, 161, 14);
+		panel.add(cargaConcTXT);
 		
-		JLabel cargDistTXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
-		cargDistTXT.setForeground(Color.WHITE);
-		cargDistTXT.setFont(new Font("Arial", Font.BOLD, 16));
-		cargDistTXT.setBounds(58, 231, 154, 14);
-		panel.add(cargDistTXT);
+		cargaDistTXT = new JLabel();
+		cargaDistTXT.setForeground(Color.WHITE);
+		cargaDistTXT.setFont(new Font("Arial", Font.PLAIN, 16));
+		cargaDistTXT.setBounds(60, 225, 188, 14);
+		panel.add(cargaDistTXT);
 		
-		JLabel b1TXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		b1TXT = new JLabel();
 		b1TXT.setForeground(Color.WHITE);
-		b1TXT.setFont(new Font("Arial", Font.BOLD, 16));
-		b1TXT.setBounds(701, 189, 154, 14);
+		b1TXT.setFont(new Font("Arial", Font.PLAIN, 16));
+		b1TXT.setBounds(736, 185, 166, 14);
 		panel.add(b1TXT);
 		
-		JLabel c1TXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		c1TXT = new JLabel();
 		c1TXT.setForeground(Color.WHITE);
-		c1TXT.setFont(new Font("Arial", Font.BOLD, 16));
-		c1TXT.setBounds(969, 244, 154, 14);
+		c1TXT.setFont(new Font("Arial", Font.PLAIN, 16));
+		c1TXT.setBounds(969, 244, 168, 14);
 		panel.add(c1TXT);
 		
-		JLabel a1TXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		a1TXT = new JLabel();
 		a1TXT.setForeground(Color.WHITE);
 		a1TXT.setFont(new Font("Arial", Font.PLAIN, 16));
-		a1TXT.setBounds(969, 340, 154, 14);
+		a1TXT.setBounds(969, 340, 168, 14);
 		panel.add(a1TXT);
 		
-		JLabel a2TXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		a2TXT = new JLabel();
 		a2TXT.setForeground(Color.WHITE);
 		a2TXT.setFont(new Font("Arial", Font.PLAIN, 16));
 		a2TXT.setBounds(796, 340, 154, 14);
 		panel.add(a2TXT);
 		
-		JLabel b2TXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		b2TXT = new JLabel();
 		b2TXT.setForeground(Color.WHITE);
 		b2TXT.setFont(new Font("Arial", Font.PLAIN, 16));
-		b2TXT.setBounds(746, 506, 154, 14);
+		b2TXT.setBounds(748, 504, 154, 14);
 		panel.add(b2TXT);
 		
-		JLabel c2TXT = new JLabel("<html><div style='text-align: center;'>20 m</div></html>");
+		c2TXT = new JLabel();
 		c2TXT.setForeground(Color.WHITE);
 		c2TXT.setFont(new Font("Arial", Font.PLAIN, 16));
-		c2TXT.setBounds(969, 440, 154, 14);
+		c2TXT.setBounds(969, 440, 168, 14);
 		panel.add(c2TXT);
 		
 		JLabel observacao = new JLabel("*Observa\u00E7\u00E3o:  os comprimentos das figuras n\u00E3o est\u00E3o em propor\u00E7\u00E3o.");
@@ -132,27 +204,27 @@ public class JanelaResultados extends JFrame {
 		observacao.setBounds(58, 540, 439, 46);
 		panel.add(observacao);
 		
-		//Reação e diagramas
+		//Reação
 		JLabel tituloReacao = new JLabel("Rea\u00E7\u00E3o no apoio de engaste (no ponto A):");
 		tituloReacao.setForeground(Color.WHITE);
 		tituloReacao.setFont(new Font("Arial", Font.PLAIN, 24));
 		tituloReacao.setBackground(Color.WHITE);
 		tituloReacao.setBounds(21, 682, 879, 46);
 		panel.add(tituloReacao);
-				
+		
 		JLabel axTXT = new JLabel("Ax = 0");
 		axTXT.setForeground(Color.LIGHT_GRAY);
 		axTXT.setFont(new Font("Arial", Font.PLAIN, 18));
 		axTXT.setBounds(40, 739, 70, 31);
 		panel.add(axTXT);
 		
-		JLabel ayTXT = new JLabel("Ay = ");
+		ayTXT = new JLabel();
 		ayTXT.setForeground(Color.LIGHT_GRAY);
 		ayTXT.setFont(new Font("Arial", Font.PLAIN, 18));
 		ayTXT.setBounds(40, 781, 154, 31);
 		panel.add(ayTXT);
 		
-		JLabel maTXT = new JLabel("Momento no engaste:  M = ");
+		maTXT = new JLabel();
 		maTXT.setForeground(Color.LIGHT_GRAY);
 		maTXT.setFont(new Font("Arial", Font.PLAIN, 18));
 		maTXT.setBounds(40, 823, 405, 31);
@@ -164,7 +236,7 @@ public class JanelaResultados extends JFrame {
 		observacao02.setBackground(Color.WHITE);
 		observacao02.setBounds(501, 823, 336, 31);
 		panel.add(observacao02);
-
+		
 		JLabel tituloVEM = new JLabel("Diagramas de esfor\u00E7o cortante e momento fletor:");
 		tituloVEM.setForeground(Color.WHITE);
 		tituloVEM.setFont(new Font("Arial", Font.PLAIN, 24));
@@ -172,66 +244,252 @@ public class JanelaResultados extends JFrame {
 		tituloVEM.setBounds(22, 931, 879, 46);
 		panel.add(tituloVEM);
 		
+		//Parte final da janela
+		
+		JLabel tituloCorte = new JLabel("Diagramas da tens\u00E3o normal e tens\u00E3o cisalhante para um dado corte:");
+		tituloCorte.setForeground(Color.WHITE);
+		tituloCorte.setFont(new Font("Arial", Font.PLAIN, 24));
+		tituloCorte.setBackground(Color.WHITE);
+		tituloCorte.setBounds(26, 1387, 830, 46);
+		panel.add(tituloCorte);
+		
+		JLabel posCorteTXT = new JLabel("Por favor, informe a posi\u00E7\u00E3o do corte com rela\u00E7\u00E3o ao ponto A da viga.");
+		posCorteTXT.setForeground(Color.LIGHT_GRAY);
+		posCorteTXT.setFont(new Font("Arial", Font.PLAIN, 18));
+		posCorteTXT.setBounds(40, 1477, 579, 31);
+		panel.add(posCorteTXT);
+		
+		posCorteTF = new JTextField();
+		posCorteTF.setForeground(Color.LIGHT_GRAY);
+		posCorteTF.setBackground(Color.BLACK);
+		posCorteTF.setFont(new Font("Arial", Font.PLAIN, 18));
+		posCorteTF.setBounds(40, 1519, 579, 31);
+		panel.add(posCorteTF);
+		posCorteTF.setColumns(10);
+		
+		compMaxTXT = new JLabel();
+		compMaxTXT.setForeground(Color.LIGHT_GRAY);
+		compMaxTXT.setFont(new Font("Arial", Font.PLAIN, 18));
+		compMaxTXT.setBounds(40, 1977, 528, 75);
+		
+		traMaxTXT = new JLabel();
+		traMaxTXT.setForeground(Color.LIGHT_GRAY);
+		traMaxTXT.setFont(new Font("Arial", Font.PLAIN, 18));
+		traMaxTXT.setBounds(40, 2082, 528, 75);
+		
+		cisaMaxTXT = new JLabel();
+		cisaMaxTXT.setForeground(Color.LIGHT_GRAY);
+		cisaMaxTXT.setFont(new Font("Arial", Font.PLAIN, 18));
+		cisaMaxTXT.setBounds(592, 1977, 528, 75);
+
+		confirmarBtn = new JButton("CONFIRMAR");
+		confirmarBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				confirmarBtn.setEnabled(false);
+				if(verificarCorte()) {
+					desenharSigmaTau(Double.parseDouble(posCorteTF.getText()));
+					verTenAdmissiveis();
+				}
+				confirmarBtn.setEnabled(true);
+			}
+		});
+		confirmarBtn.setForeground(Color.WHITE);
+		confirmarBtn.setBackground(Color.DARK_GRAY);
+		confirmarBtn.setFont(new Font("Arial", Font.PLAIN, 16));
+		confirmarBtn.setBounds(656, 1519, 161, 31);
+		panel.add(confirmarBtn);
+		
 		//fundo e logo
 		JLabel logo = new JLabel("");
-		logo.setBounds(835, 0, 324, 156);
+		logo.setBounds(866, 0, 324, 156);
 		panel.add(logo);
 		Image logoRemo = new ImageIcon(this.getClass().getResource("/logoRemoMini.png")).getImage();
 		logo.setIcon(new ImageIcon(logoRemo));
 		
-
-		
 		fundo = new JLabel("");
-		fundo.setBounds(0, -48, 1167, 3759);
+		fundo.setBounds(0, -46, 1168, 3752);
 		panel.add(fundo);
-		fundoPronto02 = new ImageIcon(this.getClass().getResource("/fundoPronto02.png")).getImage();
+		Image fundoPronto02 = new ImageIcon(this.getClass().getResource("/fundoPronto02.png")).getImage();
 		fundo.setIcon(new ImageIcon(fundoPronto02));
 		
-
-		
-
-		
-
 	}
 	
 	public void setVisible(boolean simOuNao) {
-		if(simOuNao) {
-			
+		if(simOuNao) {	
 			//criação de um objeto calculadora com os dados fornecidos pelo usuário (dados atualizados)
-			calcula = new Calculadora(janDad.getCompViga(), janDad.getCargConc(), janDad.getCargDist(), janDad.getCompDist());
+			calcula = new Calculadora(
+					janDad.getCompViga(),
+					janDad.getCargaConc(),
+					janDad.getCargaDist(),
+					janDad.getCompDist(),
+					new SecTransversal(
+							janDad.getB1() * 0.001,
+							janDad.getC1() * 0.001,
+							janDad.getA1() * 0.001,
+							janDad.getA2() * 0.001,
+							janDad.getB2() * 0.001,
+							janDad.getC2() * 0.001
+							)
+					);
+			
+			preencher(); //preenche os títulos com os dados da janelaDados
 			
 			//criação do gráfico de esforço cortante
-			JFreeChart forCisaChart = ChartFactory.createXYLineChart(null, "Esforço cortante (em kN)", "Posição do corte (em m)", forCisaDataset(), PlotOrientation.VERTICAL, true, true, false);
+			JFreeChart forCisaChart = ChartFactory.createXYLineChart(null, "Posição do corte (em m)", "Esforço cortante (em " + unidMed + ")", forCisaDataset(), PlotOrientation.VERTICAL, false, false, false);
 			
 			//parte que coloca o gráfico de esforço cortante no painel após definir a posição e o tamanho
-			ChartPanel ForCisaChartPanel = new ChartPanel(forCisaChart);
+			ForCisaChartPanel = new ChartPanel(forCisaChart);
 			panel.add(ForCisaChartPanel);
 			ForCisaChartPanel.setBounds(40, 1015, 528, 316);
 			
 			//criação do gráfico de momento fletor
-			JFreeChart momFletChart = ChartFactory.createXYLineChart(null, "Momento fletor (em kN.m)", "Posição do corte (em m)", momFletDataset(), PlotOrientation.VERTICAL, true, true, false);
+			JFreeChart momFletChart = ChartFactory.createXYLineChart(null, "Posição do corte (em m)", "Momento fletor (em " + unidMed + ".m)", momFletDataset(), PlotOrientation.VERTICAL, false, false, false);
 			
 			//parte que coloca o gráfico de momento fletor no painel após definir a posição e o tamanho
-			ChartPanel momFletChartPanel = new ChartPanel(momFletChart);
+			momFletChartPanel = new ChartPanel(momFletChart);
 			panel.add(momFletChartPanel);
-			ForCisaChartPanel.setBounds(592, 1015, 528, 316);
+			momFletChartPanel.setBounds(592, 1015, 528, 316);
 			
 			//redesenha o fundo (para ele ir para trás)
-			fundo.repaint();
+			panel.add(fundo);
 			
 			//torna a janela de resultados visível
 			super.setVisible(true);
 		}
 		else {
-			super.setVisible(false);
+			//apaga os gráficos
+			panel.remove(ForCisaChartPanel);
+			ForCisaChartPanel = null;
+			panel.remove(momFletChartPanel);
+			momFletChartPanel = null;
 			
+			//se a janela não estiver com seu tamanho normal, apaga os dois gráficos adicionais de tensão
+			//e restaura o tamanho original da janela
+			if(!tamanhoNormal) {
+				//apaga os dois gráficos adicionais
+				panel.remove(tenNormChartPanel);
+				tenNormChartPanel = null;
+				panel.remove(tenCisaChartPanel);
+				tenCisaChartPanel = null;
+				
+				//remove os textos que informam se a as tensões admissíveis foram ultrapassadas
+				panel.remove(traMaxTXT);
+				panel.remove(cisaMaxTXT);
+				panel.remove(compMaxTXT);
+				
+				//restaura o tamanho original da janela
+				scrollPane.remove(panel);
+				panel.setPreferredSize(new Dimension(1168, 1598));
+				scrollPane.setViewportView(panel);
+				
+				tamanhoNormal = true;
+				
+				posCorteTF.setText(null);
+			}
+			
+			//torna a janela invisível
+			super.setVisible(false);
 		}
 	}
 	
+	//aumenta o tamanho da janela e desenha os diagramas da tensão normal e cisalhante
+	private void desenharSigmaTau(double posicao) {
+		
+		//se o tamanho da janela for o original, aumenta o tamanho para comportar os dois novos gráficos
+		if(tamanhoNormal) {
+			scrollPane.remove(panel);
+			panel.setPreferredSize(new Dimension(1168, 2190));
+			scrollPane.setViewportView(panel);
+			
+			//adiciona os textos que informam se a as tensões admissíveis foram ultrapassadas
+			panel.add(traMaxTXT);
+			panel.add(cisaMaxTXT);
+			panel.add(compMaxTXT);
+			
+			tamanhoNormal = false;
+		}
+		
+		//criação do gráfico da tensão normal
+		JFreeChart tenNormChart = ChartFactory.createXYLineChart(null, "Altura (em mm)", "Tensão normal " + unidMed, tenNormDataset(posicao), PlotOrientation.VERTICAL, false, false, false);
+
+		//parte que coloca o gráfico da tensão normal no painel após definir a posição e o tamanho
+		tenNormChartPanel = new ChartPanel(tenNormChart);
+		panel.add(tenNormChartPanel);
+		tenNormChartPanel.setBounds(40, 1632, 528, 316);
+		
+		//criação do gráfico de tensão cisalhante
+		JFreeChart tenCisaChart = ChartFactory.createXYLineChart(null, "Altura (em mm)", "Tensao de cisalhamento " + unidMed, tenCisaDataset(posicao), PlotOrientation.VERTICAL, false, false, false);
+
+		//parte que coloca o gráfico da tensão cisalhante no painel após definir a posição e o tamanho
+		tenCisaChartPanel = new ChartPanel(tenCisaChart);
+		panel.add(tenCisaChartPanel);
+		tenCisaChartPanel.setBounds(592, 1632, 528, 316);
+		
+		//redesenha o fundo (para ele ir para trás)
+		panel.add(fundo);
+	}
+	
+	//verifica se as tensões admissíveis foram ultrapassadas
+	//atualiza as caixas de texto com as informações pertinentes
+	private void verTenAdmissiveis() {
+		
+		String texto;
+		
+		//essa parte é responsável por verificar se o usuário definiu o valor admissível para tensão de compressão
+		//também verifica se esse valor foi ultrapassado
+		if(janDad.getJanDadAdic().getCompMax() == -1.0) 
+			compMaxTXT.setText("<html>Não foi informado um valor admissível para tensão de compressão.</html>");
+		else {
+			texto = "<html>A tensão de compressão máxima encontrada é aproximadamente " + formato.format(compMaxCalc) + " " + unidMedTen;
+			if(janDad.getJanDadAdic().getCompMax() > compMaxCalc)
+				texto += ". Esse valor é inferior ao"; //TALVEZ TENHA Q VOLTAR E CONSIDERAR KGF NESSA PARTE
+			else if(janDad.getJanDadAdic().getCompMax() == compMaxCalc)
+				texto += ". Esse valor é igual ao";
+			else
+				texto += ". Esse valor é maior do que o";
+			compMaxTXT.setText(texto + " valor admissível (" + formato.format(janDad.getJanDadAdic().getCompMax()) + " " + unidMedTen + ") informado anteriormente.</html>");
+		}
+		
+		//mesma coisa que a parte anterior
+		//a diferença e é lida com tensão de tração admissível
+		if(janDad.getJanDadAdic().getTraMax() == -1.0)
+			traMaxTXT.setText("<html>A tensão de tração máxima aceitável não foi informada.</html>");
+		else {
+			texto = "<html>A tensão de tração máxima encontrada é aproximadamente " + formato.format(Math.abs(traMaxCalc)) + " " + unidMedTen + ". Esse valor ";
+			if(janDad.getJanDadAdic().getTraMax() > Math.abs(traMaxCalc))
+				texto += "é menor que o valor admissível informado (";
+			else if(janDad.getJanDadAdic().getTraMax() == Math.abs(traMaxCalc))
+				texto += "é igual ao valor admissível informado (";
+			else
+				texto += "ultrapassa o valor admissível informado (";
+			traMaxTXT.setText(texto + formato.format(janDad.getJanDadAdic().getTraMax()) + " " + unidMedTen + ").</html>");
+		}
+		
+		//mesma coisa que a parte anterior
+		//a diferença e é lida com tensão de cisalhamento admissível
+		if(janDad.getJanDadAdic().getCisaMax() == -1.0)
+			cisaMaxTXT.setText("<html>O valor máximo para tensão de cisalhamento não foi informado.</html>");
+		else {
+			texto = "<html>A tensão de cisalhamento máxima encontrada é aproximadamente " + formato.format(Math.abs(cisaMaxCalc)) + " " + unidMedTen + ". Esse valor ";
+			if(janDad.getJanDadAdic().getCisaMax() > Math.abs(cisaMaxCalc))
+				texto += "é menor (em módulo) que o valor admissível informado (";
+			else if(janDad.getJanDadAdic().getCisaMax() == Math.abs(cisaMaxCalc))
+				texto += "é igual (em módulo) ao valor admissível informado (";
+			else
+				texto += "ultrapassa (em módulo) o valor admissível informado (";
+			cisaMaxTXT.setText(texto + formato.format(janDad.getJanDadAdic().getCisaMax()) + " " + unidMedTen + ").</html>");
+		}
+		
+	}
+	
+	//funções que criam os dataset//
+	
+	//cria o dataset do gráfico da força de cisalhamento
 	private XYDataset forCisaDataset() {
 		final XYSeries forCisaSeries = new XYSeries("Esforço cortante");
-		for(double i = 0.0; i < janDad.getCompViga(); i += 0.0001)
-			forCisaSeries.add(i, calcula.calcV(i));
+		double deltaPosicao = janDad.getCompViga() / 800.0; //essa parte divide o comprimento da viga em 800 partes
+		for(double i = 0.0; i <= janDad.getCompViga(); i += deltaPosicao)
+			forCisaSeries.add(i, calcula.calcV(i)); //aqui são calculados 800 pontos para o gráfico
 		
 		final XYSeriesCollection dataset = new XYSeriesCollection();
 		dataset.addSeries(forCisaSeries);
@@ -239,14 +497,142 @@ public class JanelaResultados extends JFrame {
 		return dataset;
 	}
 	
+	//cria o dataset do gráfico do momento fletor
 	private XYDataset momFletDataset() {
 		final XYSeries momFletDataset = new XYSeries("Momento fletor");
-				for(double i = 0.0; i < 12; i += 0.0001)
-					momFletDataset.add(i, calcula.calcM(i));
+		double deltaPosicao = janDad.getCompViga() / 800.0;
+		for(double i = 0.0; i <= janDad.getCompViga(); i += deltaPosicao)
+			momFletDataset.add(i, calcula.calcM(i)); //800 pontos como informação para preencher o gráfico
 		
 		final XYSeriesCollection dataset = new XYSeriesCollection();
 		dataset.addSeries(momFletDataset);
 		
 		return dataset;
+	}
+	
+	//cria o dataset do gráfico da tensão normal em função da altura no ponto de corte
+	private XYDataset tenNormDataset(double posicao) {
+		
+		final XYSeries tenNormDataset = new XYSeries("Tensão normal");
+		double deltaAltura = (janDad.getB1() + janDad.getA1() + janDad.getB2()) / 800.0;
+		double valorAtual = 0.0;
+		
+		for(double i = 0.0; i <= janDad.getB1() + janDad.getA1() + janDad.getB2(); i += deltaAltura) {
+
+			valorAtual = calcula.calcSigma(i, posicao) * 0.001;
+			tenNormDataset.add(i, valorAtual); //800 pontos como informação para preencher o gráfico
+
+			
+			if(valorAtual >= 0) //testa se o valor atual é de compressão
+				if(valorAtual > compMaxCalc) //se for de compressão, testa se é maior do que o valor máximo para compressão atual
+					compMaxCalc = valorAtual;
+			
+			if(valorAtual <= 0)//mesma coisa do if de cima, a diferença é que essa parte é para tração (negativa)
+				if(valorAtual < traMaxCalc)
+					traMaxCalc = valorAtual;
+		}
+		
+		final XYSeriesCollection dataset = new XYSeriesCollection();
+		dataset.addSeries(tenNormDataset);
+		
+		return dataset;
+	}
+	
+	//cria o dataset do gráfico da tensão de cisalhamento em função da altura no ponto de corte
+	private XYDataset tenCisaDataset(double posicao) {
+		
+		final XYSeries tenCisaDataset = new XYSeries("Tensão de cisalhamento");
+		double deltaAltura = (janDad.getB1() + janDad.getA1() + janDad.getB2()) / 800.0;
+		double valorAtual = 0.0;
+		double valorMin = 0.0;
+		double valorMax = 0.0;
+		
+		for(double i = 0.0; i <= janDad.getB1() + janDad.getA1() + janDad.getB2(); i += deltaAltura) {
+
+			valorAtual = calcula.calcTau(i, posicao) * 0.001;
+			tenCisaDataset.add(i, valorAtual); //800 pontos como informação para preencher o gráfico
+
+			if(valorAtual > valorMax) //testa se o valor atual é maior do que o valor máximo encontrado anteriormente
+				valorMax = valorAtual;
+			
+			if(valorAtual < valorMin) //testa se o valor atual é menor do que o valor máximo encontrado anteriormente
+				valorMin = valorAtual;
+		}
+		
+		if(valorMax >= Math.abs(valorMin))
+			cisaMaxCalc = valorMax;
+		else
+			cisaMaxCalc = valorMin;
+		
+		final XYSeriesCollection dataset = new XYSeriesCollection();
+		dataset.addSeries(tenCisaDataset);
+		
+		return dataset;
+		
+	}
+	
+	//verifica se o corte informado está de acordo (ou seja, se é um número positivo menor que o comprimento total da viga)
+	private boolean verificarCorte() {
+		if(posCorteTF.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(contentPane,
+				    "O campo de texto está vazio."
+					+ "Por favor, preencha-o com a posição do corte antes de pressionar o botão.",
+				    "ERRO - campo vazio",
+				    JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if(!janDad.isDouble(posCorteTF.getText())) {
+			JOptionPane.showMessageDialog(contentPane,
+				    "A posição para o corte foi fornecida em um formato não suportado pelo programa."
+				    + "\nPor favor, utilize apenas números (e um ponto) (exemplo: 40.342)."
+				    + "\nNão use vírgula, letras ou caracteres especiais.",
+				    "ERRO - formato irreconhecível",
+				    JOptionPane.ERROR_MESSAGE);
+		return false;
+		}
+		
+		if(Double.parseDouble(posCorteTF.getText()) < 0.0) {
+			JOptionPane.showMessageDialog(contentPane,
+				    "Foi informada uma posição negativa para o corte."
+				    + "\nPor favor, informe uma posição positiva para poder prosseguir",
+				    "ERRO - posição negativa",
+				    JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if(Double.parseDouble(posCorteTF.getText()) > janDad.getCompViga()) {
+			JOptionPane.showMessageDialog(contentPane,
+				    "Foi informada uma posição para o corte maior do que o tamanho total da viga."
+				    + "\nPor favor, informe uma posição (positiva) menor ou igual ao comprimento da viga.",
+				    "ERRO - posição acima do máximo",
+				    JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		return true;
+	}
+	
+	//preenche os títulos com as informações da janelaDados
+	private void preencher() {
+		compVigaTXT.setText(janDad.getCompViga() + " m");
+		compDistTXT.setText(janDad.getCompDist() + " m");
+		cargaConcTXT.setText(janDad.getCargaConc() + " " + unidMed);
+		cargaDistTXT.setText(janDad.getCargaDist() + " " + unidMed + "/m");
+		b1TXT.setText(janDad.getB1() + " mm");
+		c1TXT.setText(janDad.getC1() + " mm");
+		a1TXT.setText(janDad.getA1() + " mm");
+		a2TXT.setText(janDad.getA2() + " mm");
+		b2TXT.setText(janDad.getB2() + " mm");
+		c2TXT.setText(janDad.getC2() + " mm");
+		ayTXT.setText("Ay = " + formato.format(calcula.getReacao()[1]) + " " + unidMed);
+		maTXT.setText("Momento no engaste:  M = " + formato.format(calcula.getReacao()[2]) + " " + unidMed + "/m");
+	}
+	
+	public void setUnidMed(String unidMed) {
+		this.unidMed = unidMed;
+	}
+	
+	public void setUnidMedTen(String unidMedTen) {
+		this.unidMedTen = unidMedTen;
 	}
 }
