@@ -19,48 +19,94 @@ public class SecTransversal {
 		calcI();
 	}
 	
-	//calcula o yBarra (posição do eixo neutro
+	//calcula o yBarra (posição do eixo neutro)
 	public void calcYBarra() {
-		yBarra = ((c2 + a1 + c1 / 2.0) * c1 * b1 + (c2 + a1 / 2.0) * a1 * a2 + (c2 / 2.0) * c2 * b2) / (b1 * c1 + a2 * a1 + c2 * b2); 
+		yBarra = ((b2 * c2 * c2) / 2.0) + ((c2 + (a1 / 2.0)) * a1 * a2) + ((c2 + a1 + (c1 / 2.0)) * c1 * b1);
+		yBarra = yBarra / (b2 * c2 + a1 * a2 + c1 * b1);
 	}
 	
 	//calcula o momento de segunda ordem da figura com relação ao eixo neutro
 	//não invoque essa função sem antes ter invocado obterYBarra
 	public void calcI() {
-		I = ((Math.pow(c2, 3) * b2) / 12.0) + c2 * b2 * Math.pow(yBarra - c2 / 2.0, 2) + ((a2 * Math.pow(a1, 3)) / 12.0) + a1 * a2 * Math.pow(yBarra - (c2 + (a1 / 2.0)), 2);
-		I += ((b1 * Math.pow(c1, 3)) / 12.0) + c1 * b1 * Math.pow(yBarra - (c2 + a1 + (c1 / 2.0)), 2);
+		I = ((b1 * Math.pow(c1, 3)) / 12.0) + (b1 * c1 * Math.pow(c2 + a1 + (c1 / 2.0) - yBarra, 2));
+		I += ((b2 * Math.pow(c2, 3)) / 12.0) + (c2 * b2 * Math.pow((c2 / 2.0) - yBarra , 2));
+		I += ((a2 * Math.pow(a1, 3)) / 12.0) + (a1 * a2 * Math.pow(c2 + (a1 / 2.0) - yBarra, 2));
 	}
 	
 	//retorna a largura medida na "altura" fornecida da seção
 	public double largura(double altura) {
-		if(altura < c2) {
+		if(altura < c2)
 			return b2;
-		}
-		else if(c2 <= altura && altura <= c2 + a1) {
+		
+		else if(c2 <= altura && altura <= c2 + a1)
 			return a2;
-		}
-		else {
+		
+		else
 			return b1;
-		}
 	}
 	
+	//NESSA CLASSE, SÓ FALTA CORRIGIR O Q
 	//calcula o momento de primeira ordem da área A'
 	//a área A' é obtida fazendo um corte em "Altura" e considerando apenas a área da seção transversal acima desse corte
-	public double calcQ(double altura) {
+	public double calcQ(double altura){
 		double resultado = 0.0;
-		if(altura > c2 + a1) {
-			resultado = b1 * (c2 + a1 + c1 - altura);
-			resultado = resultado * Math.abs(yBarra - (c2 + a1 + c1 + altura) / 2.0);
+		
+		//caso em que o yBarra cai na aba de cima
+		if(yBarra > c2 + a1) {
+			if(altura >= yBarra)
+				resultado = (c2 + a1 + c1 - altura) * b1 * (((c2 + a1 + c1 + altura) / 2.0) - yBarra);
+			
+			else if(c2 + a1 < altura && altura < yBarra) {
+				resultado = b2 * c2 * (yBarra - (c2 / 2.0)) + a1 * a2 * (yBarra - c2 - (a1 / 2.0));
+				resultado += b2 * (altura - c2 - a1) * (yBarra - ((altura + c2 + a1) / 2.0));
+			}
+			
+			else if(c2 < altura && altura <= c2 + a1)
+				resultado = b2 * c2 * (yBarra - (c2 / 2.0)) + a2 * (altura - c2) * (yBarra - ((altura + c2) / 2.0));
+			
+			else if (altura <= c2)
+				resultado = b2 * altura * (yBarra - (altura / 2.0));
 		}
-		else if(c2 <= altura && altura <= c2 + a1) {
-			resultado = Math.abs(yBarra - (c2 + a1 + c1 / 2.0)) * b1 * a1;
-			resultado += Math.abs(yBarra - ((c2 + a1 + altura) / 2.0)) * a2 * (c2 + a1 - altura);
+		
+		//caso em que o yBarra cai na alma CONFERIR ESSA MERDA
+		else if(c2 <= yBarra && yBarra <= c2 + a1) {
+			if(altura > c2 + a1)
+				resultado = b1 * (c2 + a1 + c1 - altura) * (((c2 + a1 + c1 + altura) / 2.0) - yBarra);
+			
+			else if(yBarra <= altura && altura <= c2 + a1) {
+				resultado = b1 * c1 * (c2 + a1 + (c1 / 2.0) - yBarra);
+				resultado += a2 * (c2 + a1 - altura) * (((c2 + a1 + altura) / 2.0) - yBarra);
+			}
+			
+			else if(c2 < altura && altura < yBarra) {
+				resultado = b2 * c2 * (yBarra - (c2 / 2.0));
+				resultado += a2 * (altura - c2) * (yBarra - ((altura + c2) / 2.0));
+			}
+			
+			else if(altura <= c2)
+				resultado = b2 * altura * (yBarra - (altura / 2.0));
 		}
-		else {
-			resultado = Math.abs(yBarra - (c2 + a1 + c1 / 2.0)) * b1 * c1;
-			resultado += Math.abs(yBarra - c2 + a1 / 2.0) * a1 * a2;
-			resultado += Math.abs(yBarra - (c2 + altura) / 2.0) * b2 * (c2 - altura);
+		
+		//caso em que o yBarra cai na aba da parte inferior
+		else if(yBarra < c2) {
+			if(altura >= c2 + a1)
+				resultado = b2 * (c2 + a1 + c1 - altura) * (((c2 + a1 + c1 + altura) / 2.0) - yBarra);
+			
+			else if(c2 <= altura && altura < c2 + a1) {
+				resultado = b1 * c1 * (c2 + a1 + (c1 / 2.0) - yBarra);
+				resultado += a2 * (c2 + a1 - altura) * (((c2 + a1 + altura) / 2.0) - yBarra);
+			}
+			
+			else if(yBarra < altura && altura < c2) {
+				resultado = b1 * c1 * (c2 + a1 + (c1 / 2.0) - yBarra);
+				resultado += a1 * a2 * (c2 + (a1 / 2.0) - yBarra);
+				resultado += b2 * (c1 - altura) * (((c1 + altura) / 2.0) - yBarra);
+			}
+			
+			else if(altura <= yBarra)
+				resultado = altura * b2 * (yBarra - (altura / 2.0));
 		}
+		
 		return resultado;
 	}
 	
