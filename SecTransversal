@@ -21,16 +21,16 @@ public class SecTransversal {
 	
 	//calcula o yBarra (posição do eixo neutro)
 	public void calcYBarra() {
-		yBarra = ((b2 * c2 * c2) / 2.0) + ((c2 + (a1 / 2.0)) * a1 * a2) + ((c2 + a1 + (c1 / 2.0)) * c1 * b1);
+		yBarra = ((c2 / 2.0) * c2 * b2) + (c2 + (a1 / 2.0)) * a1 * a2 + ((c2 + a1 + (c1 / 2.0)) * c1 * b1);
 		yBarra = yBarra / (b2 * c2 + a1 * a2 + c1 * b1);
 	}
 	
 	//calcula o momento de segunda ordem da figura com relação ao eixo neutro
 	//não invoque essa função sem antes ter invocado obterYBarra
 	public void calcI() {
-		I = ((b1 * Math.pow(c1, 3)) / 12.0) + (b1 * c1 * Math.pow(c2 + a1 + (c1 / 2.0) - yBarra, 2));
-		I += ((b2 * Math.pow(c2, 3)) / 12.0) + (c2 * b2 * Math.pow((c2 / 2.0) - yBarra , 2));
-		I += ((a2 * Math.pow(a1, 3)) / 12.0) + (a1 * a2 * Math.pow(c2 + (a1 / 2.0) - yBarra, 2));
+		I = ((b1 * Math.pow(c1, 3)) / 12.0) + (b1 * c1 * Math.pow((c2 + a1 + (c1 / 2.0) - yBarra), 2));
+		I += ((b2 * Math.pow(c2, 3)) / 12.0) + (c2 * b2 * Math.pow(((c2 / 2.0) - yBarra) , 2));
+		I += ((a2 * Math.pow(a1, 3)) / 12.0) + (a1 * a2 * Math.pow((c2 + (a1 / 2.0) - yBarra), 2));
 	}
 	
 	//retorna a largura medida na "altura" fornecida da seção
