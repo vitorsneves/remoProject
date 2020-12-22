@@ -38,8 +38,8 @@ public class JanelaDados extends JFrame {
 	private JTextField cargDistTF;
 	private JTextField b1TF;
 	private JTextField c1TF;
-	private JTextField a1TF;
 	private JTextField a2TF;
+	private JTextField a1TF;
 	private JTextField b2TF;
 	private JTextField c2TF;
 	private JButton calcularBtn;
@@ -93,7 +93,7 @@ public class JanelaDados extends JFrame {
 		compVigaTXT.setToolTipText("Tamanho total da viga (distancia entre A e C). Forne\u00E7a o valor em metros.");
 		compVigaTXT.setFont(new Font("Arial", Font.BOLD, 14));
 		compVigaTXT.setForeground(Color.WHITE);
-		compVigaTXT.setBounds(44, 360, 220, 14);
+		compVigaTXT.setBounds(44, 355, 220, 30);
 		contentPane.add(compVigaTXT);
 		
 		compVigaTF = new JTextField();
@@ -109,7 +109,7 @@ public class JanelaDados extends JFrame {
 		compDistTXT.setToolTipText("Comprimento sobre o qual a carga distribu\u00EDda est\u00E1 distribu\u00EDda. Forne\u00E7a o valor em metros.");
 		compDistTXT.setForeground(Color.WHITE);
 		compDistTXT.setFont(new Font("Arial", Font.BOLD, 14));
-		compDistTXT.setBounds(321, 360, 245, 14);
+		compDistTXT.setBounds(321, 355, 245, 30);
 		contentPane.add(compDistTXT);
 		
 		compDistTF = new JTextField();
@@ -125,7 +125,7 @@ public class JanelaDados extends JFrame {
 		cargConcTXT.setToolTipText("Magnitude da for\u00E7a pontual aplicada em C (medida em KN).");
 		cargConcTXT.setForeground(Color.WHITE);
 		cargConcTXT.setFont(new Font("Arial", Font.BOLD, 14));
-		cargConcTXT.setBounds(44, 435, 220, 14);
+		cargConcTXT.setBounds(44, 430, 220, 30);
 		contentPane.add(cargConcTXT);
 		
 		cargConcTF = new JTextField();
@@ -141,7 +141,7 @@ public class JanelaDados extends JFrame {
 		cargDistTXT.setToolTipText("Magnitude da for\u00E7a distribuida triangularmente (medida em KN).");
 		cargDistTXT.setForeground(Color.WHITE);
 		cargDistTXT.setFont(new Font("Arial", Font.BOLD, 14));
-		cargDistTXT.setBounds(321, 435, 220, 14);
+		cargDistTXT.setBounds(321, 430, 220, 30);
 		contentPane.add(cargDistTXT);
 		
 		cargDistTF = new JTextField();
@@ -158,7 +158,7 @@ public class JanelaDados extends JFrame {
 		b1TXT = new JLabel("Mesa superior (mm)\r\n");
 		b1TXT.setForeground(Color.WHITE);
 		b1TXT.setFont(new Font("Arial", Font.BOLD, 14));
-		b1TXT.setBounds(717, 383, 220, 30);
+		b1TXT.setBounds(717, 377, 220, 30);
 		contentPane.add(b1TXT);
 		
 		b1TF = new JTextField();
@@ -173,7 +173,7 @@ public class JanelaDados extends JFrame {
 		c1TXT = new JLabel("Largura da mesa superior (mm)");
 		c1TXT.setForeground(Color.WHITE);
 		c1TXT.setFont(new Font("Arial", Font.BOLD, 14));
-		c1TXT.setBounds(968, 379, 230, 30);
+		c1TXT.setBounds(968, 377, 230, 30);
 		contentPane.add(c1TXT);
 		
 		c1TF = new JTextField();
@@ -188,13 +188,13 @@ public class JanelaDados extends JFrame {
 		a1TXT = new JLabel("Largura da alma (mm)");
 		a1TXT.setForeground(Color.WHITE);
 		a1TXT.setFont(new Font("Arial", Font.BOLD, 14));
-		a1TXT.setBounds(717, 458, 220, 30);
+		a1TXT.setBounds(717, 453, 220, 30);
 		contentPane.add(a1TXT);
 		
 		a1TF = new JTextField();
 		a1TF.setColumns(10);
 		a1TF.setBackground(Color.BLACK);
-		a1TF.setBounds(717, 483, 167, 24);
+		a1TF.setBounds(968, 483, 167, 24);
 		a1TF.setForeground(Color.WHITE);
 		a1TF.setFont(new Font("Arial", Font.PLAIN, 16));
 		contentPane.add(a1TF);
@@ -203,13 +203,13 @@ public class JanelaDados extends JFrame {
 		a2TXT = new JLabel("Comprimento da alma (mm)");
 		a2TXT.setForeground(Color.WHITE);
 		a2TXT.setFont(new Font("Arial", Font.BOLD, 14));
-		a2TXT.setBounds(968, 458, 220, 30);
+		a2TXT.setBounds(968, 453, 220, 30);
 		contentPane.add(a2TXT);
 		
 		a2TF = new JTextField();
 		a2TF.setColumns(10);
 		a2TF.setBackground(Color.BLACK);
-		a2TF.setBounds(968, 483, 167, 24);
+		a2TF.setBounds(717, 483, 167, 24);
 		a2TF.setForeground(Color.WHITE);
 		a2TF.setFont(new Font("Arial", Font.PLAIN, 16));
 		contentPane.add(a2TF);
@@ -218,13 +218,13 @@ public class JanelaDados extends JFrame {
 		b2TXT = new JLabel("Mesa inferior (mm)");
 		b2TXT.setForeground(Color.WHITE);
 		b2TXT.setFont(new Font("Arial", Font.BOLD, 14));
-		b2TXT.setBounds(717, 524, 220, 30);
+		b2TXT.setBounds(717, 529, 220, 30);
 		contentPane.add(b2TXT);
 		
 		b2TF = new JTextField();
 		b2TF.setColumns(10);
 		b2TF.setBackground(Color.BLACK);
-		b2TF.setBounds(717, 556, 167, 24);
+		b2TF.setBounds(717, 559, 167, 24);
 		b2TF.setForeground(Color.WHITE);
 		b2TF.setFont(new Font("Arial", Font.PLAIN, 16));
 		contentPane.add(b2TF);
@@ -233,13 +233,13 @@ public class JanelaDados extends JFrame {
 		c2TXT = new JLabel("Largura da mesa inferior (mm)");
 		c2TXT.setForeground(Color.WHITE);
 		c2TXT.setFont(new Font("Arial", Font.BOLD, 14));
-		c2TXT.setBounds(968, 524, 220, 30);
+		c2TXT.setBounds(968, 529, 220, 30);
 		contentPane.add(c2TXT);
 		
 		c2TF = new JTextField();
 		c2TF.setColumns(10);
 		c2TF.setBackground(Color.BLACK);
-		c2TF.setBounds(968, 556, 167, 24);
+		c2TF.setBounds(968, 559, 167, 24);
 		c2TF.setForeground(Color.WHITE);
 		c2TF.setFont(new Font("Arial", Font.PLAIN, 16));
 		contentPane.add(c2TF);
@@ -280,14 +280,14 @@ public class JanelaDados extends JFrame {
 		dadosAdicBtn = new JButton("Fornecer dados adicionais");
 		dadosAdicBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
 				if(unidMedCB.getSelectedIndex() == 0) {
-					janResul.setUnidMed("kN");
-					janResul.setUnidMedTen("MPa");
-				} 
+					System.out.println(unidMedCB.getSelectedIndex());
+					janDadAdic.setUnidMed("kN");
+					janDadAdic.setUnidMedTen("MPa");
+				}
 				else {
-					janResul.setUnidMed("kgf");
-					janResul.setUnidMedTen("tf/m²");
+					janDadAdic.setUnidMed("kgf");
+					janDadAdic.setUnidMedTen("tf/m²");
 				}
 				
 				dadosAdicBtn.setEnabled(false);
@@ -382,11 +382,11 @@ public class JanelaDados extends JFrame {
 			c1TXT.setForeground(Color.RED);
 			campoVazio = true;
 		}
-		if(a1TF.getText().isEmpty()) {
+		if(a2TF.getText().isEmpty()) {
 			a1TXT.setForeground(Color.RED);
 			campoVazio = true;
 		}
-		if(a2TF.getText().isEmpty()) {
+		if(a1TF.getText().isEmpty()) {
 			a2TXT.setForeground(Color.RED);
 			campoVazio = true;
 		}
@@ -432,11 +432,11 @@ public class JanelaDados extends JFrame {
 				c1TXT.setForeground(Color.RED);
 				stringEmCampo = true;
 			}
-			if(!isDouble(a1TF.getText())) {
+			if(!isDouble(a2TF.getText())) {
 				a1TXT.setForeground(Color.RED);
 				stringEmCampo = true;
 			}
-			if(!isDouble(a2TF.getText())) {
+			if(!isDouble(a1TF.getText())) {
 				a2TXT.setForeground(Color.RED);
 				stringEmCampo = true;
 			}
@@ -476,11 +476,11 @@ public class JanelaDados extends JFrame {
 					c1TXT.setForeground(Color.RED);
 					compNega = true;
 				}
-				if(Double.parseDouble(a1TF.getText()) <= 0.0) {
+				if(Double.parseDouble(a2TF.getText()) <= 0.0) {
 					a1TXT.setForeground(Color.RED);
 					compNega = true;
 				}
-				if(Double.parseDouble(a2TF.getText()) <= 0.0) {
+				if(Double.parseDouble(a1TF.getText()) <= 0.0) {
 					a2TXT.setForeground(Color.RED);
 					compNega = true;
 				}
@@ -552,8 +552,8 @@ public class JanelaDados extends JFrame {
 		cargDistTF.setText(null);
 		b1TF.setText(null);
 		c1TF.setText(null);
-		a1TF.setText(null);
 		a2TF.setText(null);
+		a1TF.setText(null);
 		b2TF.setText(null);
 		c2TF.setText(null);
 		allWhite();
